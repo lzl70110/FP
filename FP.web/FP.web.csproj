@@ -16,8 +16,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\FP.Domain\FP.Domain.csproj" />
     <ProjectReference Include="..\FP.Infrastructure\FP.Infrastructure.csproj" />
-    <ProjectReference Include="..\FP.Tests\FP.Tests.csproj" />
   </ItemGroup>
 
 </Project>

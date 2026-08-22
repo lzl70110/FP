@@ -9,7 +9,6 @@
   <ItemGroup>
     <Folder Include="Contracts\" />
     <Folder Include="Constants\" />
-    <Folder Include="Entities\Employees\" />
     <Folder Include="Entities\Extinguishers\" />
     <Folder Include="Entities\Inspections\" />
     <Folder Include="Entities\Rooms\" />
