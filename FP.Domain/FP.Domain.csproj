@@ -7,10 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Common\" />
     <Folder Include="Contracts\" />
     <Folder Include="Constants\" />
-    <Folder Include="Entities\Departments\" />
     <Folder Include="Entities\Employees\" />
     <Folder Include="Entities\Extinguishers\" />
     <Folder Include="Entities\Inspections\" />
