@@ -11,12 +11,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FP.Infrastructure", "FP.Inf
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FP.Tests", "FP.Tests\FP.Tests.csproj", "{5C09FB4B-0822-49F8-83E3-B3AB10F2985A}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{8EC462FD-D22E-90A8-E5CE-7E832BA40C5D}"
 	ProjectSection(SolutionItems) = preProject
-		..\..\..\Js\FireExtinguishers\FireExtinguishers\docs\architecture.md = ..\..\..\Js\FireExtinguishers\FireExtinguishers\docs\architecture.md
-		..\..\..\Js\FireExtinguishers\FireExtinguishers\docs\database.md = ..\..\..\Js\FireExtinguishers\FireExtinguishers\docs\database.md
-		..\..\..\Js\FireExtinguishers\FireExtinguishers\docs\ideas.md = ..\..\..\Js\FireExtinguishers\FireExtinguishers\docs\ideas.md
-		roadmap.md = roadmap.md
+		Docs\architecture.md = Docs\architecture.md
+		Docs\database.md = Docs\database.md
+		Docs\ideas.md = Docs\ideas.md
 	EndProjectSection
 EndProject
 Global
