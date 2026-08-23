@@ -16,7 +16,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{8EC462FD-D
 		Docs\architecture.md = Docs\architecture.md
 		Docs\database.md = Docs\database.md
 		Docs\ideas.md = Docs\ideas.md
+		Index.md = Index.md
 		Docs\roadmap.md = Docs\roadmap.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{953D0C4B-3771-4F21-BDAF-0D0E919E2E1B}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
 	EndProjectSection
 EndProject
 Global
