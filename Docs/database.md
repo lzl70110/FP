@@ -1,4 +1,4 @@
-# Database Design Draft
+﻿# Database Design Draft
 
 ## Основна идея
 
@@ -39,6 +39,52 @@ Audit:
 
 ---
 
+## positions
+
+Справочник с длъжности.
+
+Статус:
+Планирана
+
+Основни полета:
+
+- id
+- name
+- notes
+- is_active
+
+Audit:
+
+- created_at
+- created_by
+- updated_at
+- updated_by
+
+---
+
+## department_positions
+
+Свързваща таблица между цехове и длъжности.
+
+Статус:
+Планирана
+
+Основни полета:
+
+- id
+- department_id
+- position_id
+- is_active
+
+Audit:
+
+- created_at
+- created_by
+- updated_at
+- updated_by
+
+---
+
 ## employees
 
 Обща таблица за всички служители.
@@ -53,8 +99,7 @@ Audit:
 - first_name
 - middle_name
 - last_name
-- position
-- department_id
+- department_position_id
 - notes
 - is_active
 
@@ -71,7 +116,34 @@ Audit:
 
 ---
 
-## inspectors
+## employee_phones
+
+Телефонни номера на служителите.
+
+Статус:
+Планирана
+
+Основни полета:
+
+- id
+- employee_id
+- phone_number
+- notes
+
+Audit:
+
+- created_at
+- created_by
+- updated_at
+- updated_by
+
+Забележка:
+
+Един служител може да има повече от един телефонен номер.
+
+---
+
+## checkers
 
 Представлява подмножество от employees.
 
@@ -99,7 +171,7 @@ Audit:
 Помещения и обекти.
 
 Статус:
-Създадена
+Планирана
 
 Основни полета:
 
@@ -117,12 +189,73 @@ Audit:
 
 ---
 
+## holidays
+
+Официални празници и неработни дни.
+
+Статус:
+Планирана
+
+Основни полета:
+
+- id
+- holiday_date
+- name
+- is_official_holiday
+- notes
+
+Audit:
+
+- created_at
+- created_by
+- updated_at
+- updated_by
+
+Предназначение:
+
+- изчисляване на срокове
+- проверки
+- известия
+- работни и неработни дни
+
+Обновяване:
+
+- автоматично
+- първия работен ден на всеки месец
+- чрез Background Service
+
+---
+
+## holiday_sync_logs
+
+История на синхронизациите на календара.
+
+Статус:
+Планирана
+
+Основни полета:
+
+- id
+- started_at
+- finished_at
+- imported_records
+- status
+- error_message
+
+Предназначение:
+
+- проследяване на синхронизациите
+- диагностика на проблеми
+- одит на импорта
+
+---
+
 ## extinguisher_types
 
 Видове пожарогасители.
 
 Статус:
-Създадена
+Планирана
 
 Основни полета:
 
@@ -149,7 +282,7 @@ Audit:
 Ремонтно хале → Прах 6 кг → 5 бр.
 
 Статус:
-Създадена
+Планирана
 
 Основни полета:
 
@@ -200,7 +333,7 @@ Audit:
 Бъдещи възможности:
 
 - снимки
-- QR код
+- QR кодове
 - архивиране
 
 ---
@@ -223,7 +356,7 @@ Audit:
 
 - id
 - extinguisher_id
-- inspector_id
+- checker_id
 - inspection_date
 - notes
 
@@ -242,12 +375,12 @@ Audit:
 
 ---
 
-## users
+## identity_users
 
-Бъдеща таблица за потребителски акаунти.
+ASP.NET Core Identity.
 
 Статус:
-За обсъждане
+Планирана
 
 Предназначение:
 
@@ -258,7 +391,7 @@ Audit:
 
 Връзка:
 
-employees → users
+employees → identity_users
 
 ---
 
@@ -268,17 +401,33 @@ departments
 
 ↓
 
+department_positions
+
+↓
+
+positions
+
+departments
+
+↓
+
 employees
 
 ↓
 
-inspectors
+checkers
 
 employees
 
 ↓
 
-users
+identity_users
+
+employees
+
+↓
+
+employee_phones
 
 rooms
 
@@ -300,7 +449,7 @@ extinguishers
 
 inspections
 
-inspectors
+checkers
 
 ↓
 
@@ -352,9 +501,27 @@ inspections
 
 ---
 
+# Технически решения
+
+- PostgreSQL
+- Entity Framework Core
+- ASP.NET Core Identity
+- Generic Repository Pattern
+- Soft Delete
+- Audit Tracking
+- Background Services
+
+---
+
 # Бъдещи разширения
 
 - снимки
+- QR кодове
 - роли
 - права
 - Word отчети
+- PDF отчети
+- Excel отчети
+- Audit Log
+- календар на официалните празници
+- автоматична синхронизация на празниците
