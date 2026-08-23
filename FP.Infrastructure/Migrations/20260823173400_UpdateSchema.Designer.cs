@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FP.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260823160805_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20260823173400_UpdateSchema")]
+    partial class UpdateSchema
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -48,6 +48,9 @@ namespace FP.Infrastructure.Migrations
                     b.Property<int>("EmployeeId")
                         .HasColumnType("integer");
 
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
@@ -59,7 +62,8 @@ namespace FP.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("EmployeeId");
+                    b.HasIndex("EmployeeId")
+                        .IsUnique();
 
                     b.ToTable("Checkers");
                 });
@@ -298,7 +302,7 @@ namespace FP.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Position");
+                    b.ToTable("Positions");
                 });
 
             modelBuilder.Entity("FP.Domain.Entities.Requirements.RoomRequirement", b =>
@@ -404,7 +408,7 @@ namespace FP.Infrastructure.Migrations
 
                     b.HasIndex("DepartmentId");
 
-                    b.ToTable("rooms", (string)null);
+                    b.ToTable("Rooms", (string)null);
                 });
 
             modelBuilder.Entity("FP.Domain.Entities.Checkers.Checker", b =>
@@ -412,7 +416,7 @@ namespace FP.Infrastructure.Migrations
                     b.HasOne("FP.Domain.Entities.Employees.Employee", "Employee")
                         .WithMany()
                         .HasForeignKey("EmployeeId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Employee");

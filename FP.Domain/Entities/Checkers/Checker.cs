@@ -8,4 +8,5 @@ public class Checker : SoftDeletableEntity
     public int EmployeeId { get; set; }
 
     public Employee Employee { get; set; } = null!;
+    public bool IsActive { get; set; } = true;
 }

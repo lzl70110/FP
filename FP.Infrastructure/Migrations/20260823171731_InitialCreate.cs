@@ -78,7 +78,7 @@ namespace FP.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "rooms",
+                name: "Rooms",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -97,9 +97,9 @@ namespace FP.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_rooms", x => x.Id);
+                    table.PrimaryKey("PK_Rooms", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_rooms_Departments_DepartmentId",
+                        name: "FK_Rooms_Departments_DepartmentId",
                         column: x => x.DepartmentId,
                         principalTable: "Departments",
                         principalColumn: "Id",
@@ -200,9 +200,9 @@ namespace FP.Infrastructure.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_RoomRequirement_rooms_RoomId",
+                        name: "FK_RoomRequirement_Rooms_RoomId",
                         column: x => x.RoomId,
-                        principalTable: "rooms",
+                        principalTable: "Rooms",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -265,8 +265,8 @@ namespace FP.Infrastructure.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_rooms_DepartmentId",
-                table: "rooms",
+                name: "IX_Rooms_DepartmentId",
+                table: "Rooms",
                 column: "DepartmentId");
         }
 
@@ -289,7 +289,7 @@ namespace FP.Infrastructure.Migrations
                 name: "ExtinguisherTypes");
 
             migrationBuilder.DropTable(
-                name: "rooms");
+                name: "Rooms");
 
             migrationBuilder.DropTable(
                 name: "Position");
