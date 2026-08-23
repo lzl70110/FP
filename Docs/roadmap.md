@@ -186,4 +186,13 @@
 - [ ] Тестване
 - [ ] Поправка на дефекти
 - [ ] Подготовка за публикуване
-- [ ] Production Release
+- [ ] Production Release  
+ 
+ ## FP.Tools
+
+Приоритет: Среден
+
+- [ ] Project Tree Generator
+- [ ] Class Locator
+- [ ] Entity Report Generator
+- [ ] Documentation Helper
