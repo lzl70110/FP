@@ -1,0 +1,59 @@
+﻿using FP.Domain.Common;
+using FP.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
+
+namespace FP.Infrastructure.Repositories;
+
+public class Repository<TEntity> : IRepository<TEntity>
+    where TEntity : BaseEntity
+{
+    private readonly AppDbContext context;
+
+    public Repository(AppDbContext context)
+    {
+        this.context = context;
+    }
+
+    public async Task<TEntity?> GetByIdAsync(int id)
+    {
+        return await context.Set<TEntity>()
+            .FirstOrDefaultAsync(x => x.Id == id);
+    }
+
+    public async Task<List<TEntity>> GetAllAsync()
+    {
+        return await context.Set<TEntity>()
+            .ToListAsync();
+    }
+
+    public async Task<TEntity?> FirstOrDefaultAsync(
+        Expression<Func<TEntity, bool>> predicate)
+    {
+        return await context.Set<TEntity>()
+            .FirstOrDefaultAsync(predicate);
+    }
+
+    public async Task AddAsync(TEntity entity)
+    {
+        await context.Set<TEntity>()
+            .AddAsync(entity);
+    }
+
+    public void Update(TEntity entity)
+    {
+        context.Set<TEntity>()
+            .Update(entity);
+    }
+
+    public void Delete(TEntity entity)
+    {
+        context.Set<TEntity>()
+            .Remove(entity);
+    }
+
+    public async Task SaveChangesAsync()
+    {
+        await context.SaveChangesAsync();
+    }
+}

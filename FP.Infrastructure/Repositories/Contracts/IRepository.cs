@@ -1,9 +1,14 @@
-﻿public interface IRepository<TEntity>
+﻿using System.Linq.Expressions;
+
+public interface IRepository<TEntity>
     where TEntity : class
 {
     Task<TEntity?> GetByIdAsync(int id);
 
-    Task<IEnumerable<TEntity>> GetAllAsync();
+    Task<List<TEntity>> GetAllAsync();
+
+    Task<TEntity?> FirstOrDefaultAsync(
+        Expression<Func<TEntity, bool>> predicate);
 
     Task AddAsync(TEntity entity);
 
