@@ -25,7 +25,7 @@ FP е ASP.NET Core MVC приложение за управление на по�
 
 - ASP.NET Core 8 MVC
 - Entity Framework Core
-- SQL Server
+- PostgreSQL
 - ASP.NET Core Identity
 - Bootstrap
 - xUnit
