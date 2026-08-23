@@ -93,7 +93,7 @@
 - [ ] Entity Framework Core
 - [ ] ApplicationDbContext
 - [ ] Първа миграция
-- [🚧] Repository Pattern
+- [х] Repository Pattern
 
 ---
 
