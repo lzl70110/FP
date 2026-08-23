@@ -10,7 +10,7 @@ public class RoomConfiguration
 {
     public void Configure(EntityTypeBuilder<Room> builder)
     {
-        builder.ToTable("rooms");
+        builder.ToTable("Rooms");
         builder.HasKey(r => r.Id);
 
         builder

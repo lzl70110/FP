@@ -9,9 +9,11 @@
   <ItemGroup>
     <Folder Include="Contracts\" />
     <Folder Include="Constants\" />
-    <Folder Include="Entities\Extinguishers\" />
-    <Folder Include="Entities\Requirements\" />
     <Folder Include="Enums\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.10" />
   </ItemGroup>
 
 </Project>
