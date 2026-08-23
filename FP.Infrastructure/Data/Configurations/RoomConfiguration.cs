@@ -1,0 +1,31 @@
+﻿
+using FP.Domain.Entities.Rooms;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
+namespace FP.Infrastructure.Data.Configurations;
+
+public class RoomConfiguration
+    : IEntityTypeConfiguration<Room>
+{
+    public void Configure(EntityTypeBuilder<Room> builder)
+    {
+        builder.ToTable("rooms");
+        builder.HasKey(r => r.Id);
+
+        builder
+            .Property(r => r.Name)
+            .IsRequired()
+            .HasMaxLength(100);
+
+        builder
+            .Property(r => r.Notes)
+            .HasMaxLength(1000);
+
+        builder
+            .HasOne(r => r.Department)
+            .WithMany(d => d.Rooms)
+            .HasForeignKey(r => r.DepartmentId)
+            .OnDelete(DeleteBehavior.Restrict);
+    }
+}

@@ -6,5 +6,5 @@ public abstract class SoftDeletableEntity : AuditableEntity
 
     public DateTime? DeletedAt { get; set; }
 
-    public int? DeletedById { get; set; }
+    public string? DeletedById { get; set; }
 }

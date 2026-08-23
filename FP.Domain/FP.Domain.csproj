@@ -10,7 +10,6 @@
     <Folder Include="Contracts\" />
     <Folder Include="Constants\" />
     <Folder Include="Entities\Extinguishers\" />
-    <Folder Include="Entities\Rooms\" />
     <Folder Include="Entities\Requirements\" />
     <Folder Include="Enums\" />
   </ItemGroup>
