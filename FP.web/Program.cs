@@ -2,6 +2,8 @@
 using FP.Infrastructure.Data;
 using FP.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
+using FP.Application.Contracts.Services;
+using FP.Infrastructure.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +18,8 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddScoped(
     typeof(IRepository<>),
     typeof(Repository<>));
+
+builder.Services.AddScoped<IDepartmentService, DepartmentService>();
 
 var app = builder.Build();
 

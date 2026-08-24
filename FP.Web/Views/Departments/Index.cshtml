@@ -1,0 +1,11 @@
+﻿@using FP.Domain.Entities.Departments
+@model List<Department>
+
+<h1>Departments</h1>
+
+<ul>
+    @foreach (var department in Model)
+    {
+        <li>@department.Name</li>
+    }
+</ul>
