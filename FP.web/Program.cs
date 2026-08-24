@@ -1,4 +1,5 @@
 ﻿using FP.Infrastructure.Data;
+using FP.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,6 +11,10 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(connectionString));
 
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddScoped(
+    typeof(IRepository<>),
+    typeof(Repository<>));
 
 var app = builder.Build();
 

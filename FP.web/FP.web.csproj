@@ -18,6 +18,7 @@
   <ItemGroup>
     <ProjectReference Include="..\FP.Domain\FP.Domain.csproj" />
     <ProjectReference Include="..\FP.Infrastructure\FP.Infrastructure.csproj" />
+    <ProjectReference Include="..\FP.Application\FP.Application.csproj" />
   </ItemGroup>
 
   <ItemGroup>
