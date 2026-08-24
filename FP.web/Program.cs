@@ -1,4 +1,5 @@
-﻿using FP.Infrastructure.Data;
+﻿using FP.Application.Contracts.Repositories;
+using FP.Infrastructure.Data;
 using FP.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 

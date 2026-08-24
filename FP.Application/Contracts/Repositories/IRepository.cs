@@ -1,5 +1,6 @@
 ﻿using System.Linq.Expressions;
 
+namespace FP.Application.Contracts.Repositories;
 public interface IRepository<TEntity>
     where TEntity : class
 {

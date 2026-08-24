@@ -1,8 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="..\FP.Domain\FP.Domain.csproj" />
-    <ProjectReference Include="..\FP.Infrastructure\FP.Infrastructure.csproj" />
+    <Folder Include="Contracts\Services\" />
   </ItemGroup>
 
   <PropertyGroup>
