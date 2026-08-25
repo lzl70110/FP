@@ -7,7 +7,7 @@ using System.Linq.Expressions;
 namespace FP.Infrastructure.Repositories;
 
 public class Repository<TEntity> : IRepository<TEntity>
-    where TEntity : BaseEntity
+    where TEntity : SoftDeletableEntity
 {
     private readonly AppDbContext context;
 
@@ -49,8 +49,11 @@ public class Repository<TEntity> : IRepository<TEntity>
 
     public void Delete(TEntity entity)
     {
+        entity.IsDeleted = true;
+        entity.DeletedAt = DateTime.UtcNow;
+
         context.Set<TEntity>()
-            .Remove(entity);
+            .Update(entity);
     }
 
     public async Task SaveChangesAsync()

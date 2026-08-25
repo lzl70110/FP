@@ -4,7 +4,7 @@ using FP.Domain.Entities.Positions;
 
 namespace FP.Domain.Entities.DepartmentPositions;
 
-public class DepartmentPosition : AuditableEntity
+public class DepartmentPosition :  SoftDeletableEntity
 {
     public int DepartmentId { get; set; }
 

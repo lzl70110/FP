@@ -14,6 +14,17 @@
         <span asp-validation-for="Name" class="text-danger"></span>
     </div>
 
+    <div class="mb-3">
+        <label asp-for="Notes" class="form-label"></label>
+        <textarea asp-for="Notes" class="form-control" rows="3"></textarea>
+        <span asp-validation-for="Notes" class="text-danger"></span>
+    </div>
+
+    <div class="form-check mb-3">
+        <input asp-for="IsActive" class="form-check-input" />
+        <label asp-for="IsActive" class="form-check-label"></label>
+    </div>
+
     <button type="submit" class="btn btn-primary">
         Запиши
     </button>
