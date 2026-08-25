@@ -6,6 +6,8 @@ public interface IDepartmentService
 {
     Task<List<Department>> GetAllAsync();
 
+    Task<List<Department>> GetDeletedAsync();
+
     Task<Department?> GetByIdAsync(int id);
 
     Task CreateAsync(Department department);

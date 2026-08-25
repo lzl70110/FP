@@ -1,12 +1,15 @@
 ﻿using System.Linq.Expressions;
 
 namespace FP.Application.Contracts.Repositories;
+
 public interface IRepository<TEntity>
     where TEntity : class
 {
     Task<TEntity?> GetByIdAsync(int id);
 
     Task<List<TEntity>> GetAllAsync();
+
+    Task<List<TEntity>> GetDeletedAsync();
 
     Task<TEntity?> FirstOrDefaultAsync(
         Expression<Func<TEntity, bool>> predicate);

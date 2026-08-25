@@ -1,8 +1,98 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Начало";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="text-center py-4">
+
+    <div class="mb-4">
+        <div class="display-1">🧯</div>
+
+        <h1 class="display-5 fw-bold">
+            Дневник на пожарогасителите
+        </h1>
+
+        <p class="lead text-muted">
+            Регистър и контрол на пожарогасителите
+        </p>
+    </div>
+
+</div>
+
+<div class="row g-4">
+
+    <div class="col-md-4">
+        <div class="card h-100 shadow-sm border-0">
+            <div class="card-body text-center p-4">
+
+                <div class="fs-1 mb-3">📋</div>
+
+                <h5 class="card-title fw-bold">
+                    Последна проверка
+                </h5>
+
+                <p class="text-muted mb-0">
+                    Все още няма извършени проверки.
+                </p>
+
+            </div>
+        </div>
+    </div>
+
+
+    <div class="col-md-4">
+        <div class="card h-100 shadow-sm border-0">
+            <div class="card-body text-center p-4">
+
+                <div class="fs-1 mb-3">⚠️</div>
+
+                <h5 class="card-title fw-bold">
+                    Изтекли ревизии
+                </h5>
+
+                <p class="text-muted mb-0">
+                    Няма данни.
+                </p>
+
+            </div>
+        </div>
+    </div>
+
+
+    <div class="col-md-4">
+        <div class="card h-100 shadow-sm border-0">
+            <div class="card-body text-center p-4">
+
+                <div class="fs-1 mb-3">📅</div>
+
+                <h5 class="card-title fw-bold">
+                    Предстоящи ревизии
+                </h5>
+
+                <p class="text-muted mb-0">
+                    Няма данни.
+                </p>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<div class="card shadow-sm border-0 mt-4">
+    <div class="card-body p-4 text-center">
+
+        <h5 class="fw-bold mb-3">
+            📆 Днес
+        </h5>
+
+        <div class="fs-4">
+            @DateTime.Now.ToString("dd.MM.yyyy")
+        </div>
+
+        <div class="text-muted">
+            @DateTime.Now.ToString("dddd")
+        </div>
+
+    </div>
 </div>

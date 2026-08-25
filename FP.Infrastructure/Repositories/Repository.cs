@@ -28,6 +28,14 @@ public class Repository<TEntity> : IRepository<TEntity>
             .ToListAsync();
     }
 
+    public async Task<List<TEntity>> GetDeletedAsync()
+    {
+        return await context.Set<TEntity>()
+            .IgnoreQueryFilters()
+            .Where(x => x.IsDeleted)
+            .ToListAsync();
+    }
+
     public async Task<TEntity?> FirstOrDefaultAsync(
         Expression<Func<TEntity, bool>> predicate)
     {

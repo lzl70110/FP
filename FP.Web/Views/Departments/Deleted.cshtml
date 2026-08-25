@@ -1,0 +1,44 @@
+﻿@model IEnumerable<FP.Domain.Entities.Departments.Department>
+
+@{
+    ViewData["Title"] = "Изтрити отдели";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1>Изтрити отдели</h1>
+
+    <a asp-action="Index" class="btn btn-secondary">
+        Назад
+    </a>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">
+        Няма изтрити отдели.
+    </div>
+}
+else
+{
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>Наименование</th>
+                <th>Бележки</th>
+                <th>Изтрит на</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var department in Model)
+            {
+                <tr>
+                    <td>@department.Name</td>
+                    <td>@department.Notes</td>
+                    <td>
+                        @department.DeletedAt?.ToLocalTime().ToString("dd.MM.yyyy HH:mm")
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

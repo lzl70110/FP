@@ -32,6 +32,13 @@ public class DepartmentsController : Controller
         return View(department);
     }
 
+    public async Task<IActionResult> Deleted()
+    {
+        var departments = await service.GetDeletedAsync();
+
+        return View(departments);
+    }
+
     [HttpGet]
     public IActionResult Create()
     {
@@ -75,6 +82,15 @@ public class DepartmentsController : Controller
         }
 
         await service.UpdateAsync(department);
+
+        return RedirectToAction(nameof(Index));
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Delete(int id)
+    {
+        await service.DeleteAsync(id);
 
         return RedirectToAction(nameof(Index));
     }

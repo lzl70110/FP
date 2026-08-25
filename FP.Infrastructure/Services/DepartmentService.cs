@@ -2,7 +2,6 @@
 using FP.Application.Contracts.Services;
 using FP.Domain.Entities.Departments;
 
-
 namespace FP.Infrastructure.Services;
 
 public class DepartmentService : IDepartmentService
@@ -17,6 +16,11 @@ public class DepartmentService : IDepartmentService
     public async Task<List<Department>> GetAllAsync()
     {
         return await repository.GetAllAsync();
+    }
+
+    public async Task<List<Department>> GetDeletedAsync()
+    {
+        return await repository.GetDeletedAsync();
     }
 
     public async Task<Department?> GetByIdAsync(int id)
