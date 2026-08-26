@@ -13,4 +13,5 @@ public class Department: SoftDeletableEntity
     public bool IsActive { get; set; } = true;
     public ICollection<Room> Rooms { get; set; }
     = new HashSet<Room>();
+    
 }

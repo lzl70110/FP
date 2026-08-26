@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿
+<!DOCTYPE html>
 <html lang="bg">
 <head>
     <meta charset="utf-8" />
@@ -20,9 +21,10 @@
 
 <body>
 
+    <!-- Header -->
     <header>
-        <nav class="navbar navbar-expand-sm navbar-light bg-white border-bottom box-shadow mb-4">
-            <div class="container">
+        <nav class="navbar navbar-light bg-white border-bottom box-shadow">
+            <div class="container-fluid">
 
                 <a class="navbar-brand fw-bold"
                    asp-area=""
@@ -31,20 +33,33 @@
                     🧯 Пожарогасители
                 </a>
 
-                <button class="navbar-toggler"
-                        type="button"
-                        data-bs-toggle="collapse"
-                        data-bs-target=".navbar-collapse"
-                        aria-controls="navbarSupportedContent"
-                        aria-expanded="false"
-                        aria-label="Покажи навигацията">
+                <div class="text-center">
+                    <div class="fs-5">
+                        📆 Днес @DateTime.Now.ToString("dd.MM.yyyy")
+                        <i>@DateTime.Now.ToString("dddd")</i>
+                    </div>
+                </div>
 
-                    <span class="navbar-toggler-icon"></span>
-                </button>
+                <span class="fs-4">
+                    @(User.Identity?.IsAuthenticated == true
+                                        ? User.Identity.Name
+                                        : "Гост")
+                </span>
 
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+            </div>
+        </nav>
+    </header>
 
-                    <ul class="navbar-nav">
+
+    <!-- Page layout -->
+    <div class="container-fluid">
+        <div class="row">
+
+            <!-- Sidebar navigation -->
+            <aside class="col-md-2 border-end min-vh-100 pt-3">
+
+                <nav>
+                    <ul class="nav flex-column fs-5">
 
                         <li class="nav-item">
                             <a class="nav-link"
@@ -74,30 +89,24 @@
                         </li>
 
                     </ul>
+                </nav>
 
-                    <div class="d-flex align-items-center">
-                        @* Login partial will be enabled after Identity is added. *@
-                        @* <partial name="_LoginPartial" /> *@
-                    </div>
-
-                </div>
-            </div>
-        </nav>
-    </header>
+            </aside>
 
 
-    <div class="container">
+            <!-- Main content -->
+            <main role="main" class="col-md-10 pb-4 pt-3">
+                @RenderBody()
+            </main>
 
-        <main role="main" class="pb-4">
-            @RenderBody()
-        </main>
-
+        </div>
     </div>
 
 
+    <!-- Footer -->
     <footer class="border-top footer text-muted mt-auto">
         <div class="container py-3">
-            &copy; 2026 - Дневник на пожарогасителите
+            © август 2026 · Дизайн и разработка: Любомир Чекански
         </div>
     </footer>
 
@@ -113,3 +122,4 @@
 
 </body>
 </html>
+```

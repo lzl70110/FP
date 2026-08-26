@@ -1,5 +1,6 @@
 ﻿using FP.Domain.Common;
 using FP.Domain.Entities.Checkers;
+using FP.Domain.Entities.DepartmentPositions;
 using FP.Domain.Entities.Departments;
 using FP.Domain.Entities.Employees;
 using FP.Domain.Entities.Extinguishers;
@@ -23,6 +24,7 @@ public class AppDbContext : DbContext
     public DbSet<Checker> Checkers { get; set; } = null!;
     public DbSet<Extinguisher> Extinguishers { get; set; } = null!;
     public DbSet<ExtinguisherType> ExtinguisherTypes { get; set; } = null!;
+    public DbSet<DepartmentPosition> DepartmentPositions { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
