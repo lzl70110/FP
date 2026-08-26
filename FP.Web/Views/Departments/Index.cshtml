@@ -44,7 +44,11 @@
                        class="btn btn-sm btn-warning">
                         Редактирай
                     </a>
-
+                    <a asp-action="Details"
+   asp-route-id="@department.Id"
+   class="btn btn-sm btn-info">
+    Детайли
+</a>
                     <form asp-action="Delete"
                           asp-route-id="@department.Id"
                           method="post"

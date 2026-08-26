@@ -1,12 +1,15 @@
-﻿@model FP.Domain.Entities.Departments.Department
+﻿ 
+@model FP.Domain.Entities.Departments.Department
 
 @{
-    ViewData["Title"] = "Нов отдел";
+    ViewData["Title"] = "Редактиране на отдел";
 }
 
-<h1>Нов отдел</h1>
+<h1>Редактиране на отдел</h1>
 
-<form asp-action="Create" method="post">
+<form asp-action="Edit" method="post">
+
+    <input type="hidden" asp-for="Id" />
 
     <div class="mb-3 col-md-3">
         <label asp-for="Name" class="form-label"></label>
@@ -20,13 +23,13 @@
         <span asp-validation-for="Notes" class="text-danger"></span>
     </div>
 
-    <div class="form-check mb-3 ">
+    <div class="form-check mb-3">
         <input asp-for="IsActive" class="form-check-input" />
         <label asp-for="IsActive" class="form-check-label"></label>
     </div>
 
     <button type="submit" class="btn btn-primary">
-        Запиши
+        Запиши промените
     </button>
 
     <a asp-action="Index" class="btn btn-secondary">
@@ -40,3 +43,4 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 }
+ 
