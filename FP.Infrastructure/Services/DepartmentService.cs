@@ -52,4 +52,21 @@ public class DepartmentService : IDepartmentService
         repository.Delete(department);
         await repository.SaveChangesAsync();
     }
+
+    public async Task UndeleteAsync(int id)
+    {
+        var department = await repository.GetDeletedByIdAsync(id);
+
+        if (department == null)
+        {
+            return;
+        }
+
+        department.IsDeleted = false;
+        department.DeletedAt = null;
+        department.DeletedById = null;
+
+        repository.Update(department);
+        await repository.SaveChangesAsync();
+    }
 }

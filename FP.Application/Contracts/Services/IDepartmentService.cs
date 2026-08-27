@@ -15,4 +15,6 @@ public interface IDepartmentService
     Task UpdateAsync(Department department);
 
     Task DeleteAsync(int id);
+
+    Task UndeleteAsync(int id);
 }

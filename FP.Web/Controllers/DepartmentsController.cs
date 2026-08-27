@@ -94,4 +94,13 @@ public class DepartmentsController : Controller
 
         return RedirectToAction(nameof(Index));
     }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Undelete(int id)
+    {
+        await service.UndeleteAsync(id);
+
+        return RedirectToAction(nameof(Deleted));
+    }
 }

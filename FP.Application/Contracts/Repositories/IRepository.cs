@@ -21,4 +21,6 @@ public interface IRepository<TEntity>
     void Delete(TEntity entity);
 
     Task SaveChangesAsync();
+
+    Task<TEntity?> GetDeletedByIdAsync(int id);
 }

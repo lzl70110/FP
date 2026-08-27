@@ -68,4 +68,11 @@ public class Repository<TEntity> : IRepository<TEntity>
     {
         await context.SaveChangesAsync();
     }
+
+    public async Task<TEntity?> GetDeletedByIdAsync(int id)
+    {
+        return await context.Set<TEntity>()
+            .IgnoreQueryFilters()
+            .FirstOrDefaultAsync(x => x.Id == id && x.IsDeleted);
+    }
 }

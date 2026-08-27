@@ -1,5 +1,8 @@
 ﻿@model IEnumerable<FP.Domain.Entities.Departments.Department>
 
+@using FP.Infrastructure.Services
+@inject DateTimeService DateTimeService
+
 @{
     ViewData["Title"] = "Изтрити отдели";
 }
@@ -26,6 +29,7 @@ else
                 <th>Наименование</th>
                 <th>Бележки</th>
                 <th>Изтрит на</th>
+                <th>Действия</th>
             </tr>
         </thead>
         <tbody>
@@ -35,10 +39,22 @@ else
                     <td>@department.Name</td>
                     <td>@department.Notes</td>
                     <td>
-                        @department.DeletedAt?.ToLocalTime().ToString("dd.MM.yyyy HH:mm")
+                        @(department.DeletedAt.HasValue
+                                        ? DateTimeService.UtcToLocal(department.DeletedAt.Value)
+                                        .ToString("dd.MM.yyyy HH:mm")
+                                        : "—")
+            </td>
+            <td>
+                <form asp-action="Undelete" method="post">
+                    <input type="hidden" name="id" value="@department.Id" />
+
+                            <button type="submit" class="btn btn-success btn-sm">
+                                Възстанови
+                            </button>
+                        </form>
                     </td>
                 </tr>
-            }
+                }
         </tbody>
     </table>
 }
