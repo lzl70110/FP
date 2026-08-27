@@ -26,6 +26,27 @@ public class AppDbContext : DbContext
     public DbSet<ExtinguisherType> ExtinguisherTypes { get; set; } = null!;
     public DbSet<DepartmentPosition> DepartmentPositions { get; set; } = null!;
 
+    public override async Task<int> SaveChangesAsync(
+     CancellationToken cancellationToken = default)
+    {
+        var entries = ChangeTracker
+            .Entries<SoftDeletableEntity>();
+
+        foreach (var entry in entries)
+        {
+            if (entry.State == EntityState.Added)
+            {
+                entry.Entity.CreatedAt = DateTime.UtcNow;
+            }
+            else if (entry.State == EntityState.Modified)
+            {
+                entry.Entity.UpdatedAt = DateTime.UtcNow;
+            }
+        }
+
+        return await base.SaveChangesAsync(cancellationToken);
+    }
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
