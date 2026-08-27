@@ -1,9 +1,10 @@
 ﻿using System.Linq.Expressions;
+using FP.Domain.Common;
 
 namespace FP.Application.Contracts.Repositories;
 
 public interface IRepository<TEntity>
-    where TEntity : class
+    where TEntity : SoftDeletableEntity
 {
     Task<TEntity?> GetByIdAsync(int id);
 
