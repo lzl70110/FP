@@ -1,4 +1,5 @@
-﻿using FP.Application.Contracts.Services;
+﻿using FP.Application.Common;
+using FP.Application.Contracts.Services;
 using FP.Domain.Entities.Departments;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,10 +8,14 @@ namespace FP.Web.Controllers;
 public class DepartmentsController : Controller
 {
     private readonly IDepartmentService service;
+    private readonly ICrudService<Department> crudService;
 
-    public DepartmentsController(IDepartmentService service)
+    public DepartmentsController(
+        IDepartmentService service,
+        ICrudService<Department> crudService)
     {
         this.service = service;
+        this.crudService = crudService;
     }
 
     public async Task<IActionResult> Index()
@@ -22,7 +27,9 @@ public class DepartmentsController : Controller
 
     public async Task<IActionResult> Details(int id)
     {
-        var department = await service.GetByIdAsync(id);
+        var department = await crudService.ExecuteAsync(
+            CrudCommand.Read,
+            id);
 
         if (department == null)
         {
@@ -54,7 +61,26 @@ public class DepartmentsController : Controller
             return View(department);
         }
 
-        await service.CreateAsync(department);
+        await crudService.ExecuteAsync(
+            CrudCommand.Create,
+            properties:
+            [
+                new CrudProperty
+                {
+                    Name = nameof(Department.Name),
+                    Value = department.Name
+                },
+                new CrudProperty
+                {
+                    Name = nameof(Department.Notes),
+                    Value = department.Notes
+                },
+                new CrudProperty
+                {
+                    Name = nameof(Department.IsActive),
+                    Value = department.IsActive
+                }
+            ]);
 
         return RedirectToAction(nameof(Index));
     }
@@ -81,7 +107,26 @@ public class DepartmentsController : Controller
             return View(department);
         }
 
-        await service.UpdateAsync(department);
+        await crudService.ExecuteAsync(
+            CrudCommand.Update,
+            department.Id,
+            [
+                new CrudProperty
+            {
+                Name = nameof(Department.Name),
+                Value = department.Name
+            },
+            new CrudProperty
+            {
+                Name = nameof(Department.Notes),
+                Value = department.Notes
+            },
+            new CrudProperty
+            {
+                Name = nameof(Department.IsActive),
+                Value = department.IsActive
+            }
+            ]);
 
         return RedirectToAction(nameof(Index));
     }
