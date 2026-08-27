@@ -1,5 +1,6 @@
-﻿ 
-@model FP.Domain.Entities.Departments.Department
+﻿@model FP.Domain.Entities.Departments.Department
+@using FP.Infrastructure.Services
+@inject DateTimeService DateTimeService
 
 @{
     ViewData["Title"] = "Детайли за отдел";
@@ -30,20 +31,26 @@
 
     <dl class="row">
         <dt class="col-sm-4">Създаден на</dt>
-        <dd class="col-sm-8">@Model.CreatedAt.ToString("dd.MM.yyyy HH:mm")</dd>
+        <dd class="col-sm-8">
+            @DateTimeService.UtcToLocal(Model.CreatedAt).ToString("dd.MM.yyyy HH:mm")
+        </dd>
 
         <dt class="col-sm-4">Последна промяна</dt>
         <dd class="col-sm-8">
-            @(Model.UpdatedAt?.ToString("dd.MM.yyyy HH:mm") ?? "—")
+            @(Model.UpdatedAt.HasValue
+                        ? DateTimeService.UtcToLocal(Model.UpdatedAt.Value).ToString("dd.MM.yyyy HH:mm")
+                        : "—")
         </dd>
 
         @if (Model.IsDeleted)
         {
             <dt class="col-sm-4">Изтрит на</dt>
             <dd class="col-sm-8">
-                @(Model.DeletedAt?.ToString("dd.MM.yyyy HH:mm") ?? "—")
-            </dd>
-        }
+                @(Model.DeletedAt.HasValue
+                            ? DateTimeService.UtcToLocal(Model.DeletedAt.Value).ToString("dd.MM.yyyy HH:mm")
+                            : "—")
+        </dd>
+                }
     </dl>
 
     <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">
@@ -55,4 +62,3 @@
     </a>
 
 </div>
- 

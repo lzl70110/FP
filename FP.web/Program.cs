@@ -20,7 +20,7 @@ builder.Services.AddScoped(
     typeof(Repository<>));
 
 builder.Services.AddScoped<IDepartmentService, DepartmentService>();
-
+builder.Services.AddSingleton<DateTimeService>();
 var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())
