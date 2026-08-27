@@ -112,20 +112,20 @@ public class DepartmentsController : Controller
             department.Id,
             [
                 new CrudProperty
-            {
-                Name = nameof(Department.Name),
-                Value = department.Name
-            },
-            new CrudProperty
-            {
-                Name = nameof(Department.Notes),
-                Value = department.Notes
-            },
-            new CrudProperty
-            {
-                Name = nameof(Department.IsActive),
-                Value = department.IsActive
-            }
+                {
+                    Name = nameof(Department.Name),
+                    Value = department.Name
+                },
+                new CrudProperty
+                {
+                    Name = nameof(Department.Notes),
+                    Value = department.Notes
+                },
+                new CrudProperty
+                {
+                    Name = nameof(Department.IsActive),
+                    Value = department.IsActive
+                }
             ]);
 
         return RedirectToAction(nameof(Index));
@@ -135,7 +135,9 @@ public class DepartmentsController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Delete(int id)
     {
-        await service.DeleteAsync(id);
+        await crudService.ExecuteAsync(
+            CrudCommand.Delete,
+            id);
 
         return RedirectToAction(nameof(Index));
     }
@@ -144,7 +146,9 @@ public class DepartmentsController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Undelete(int id)
     {
-        await service.UndeleteAsync(id);
+        await crudService.ExecuteAsync(
+            CrudCommand.Undelete,
+            id);
 
         return RedirectToAction(nameof(Deleted));
     }
