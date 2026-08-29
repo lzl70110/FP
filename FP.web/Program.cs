@@ -26,6 +26,8 @@ builder.Services.AddScoped(
 
 builder.Services.AddScoped<IDepartmentService, DepartmentService>();
 
+builder.Services.AddScoped<IEmployeeService, EmployeeService>();
+
 builder.Services.AddSingleton<DateTimeService>();
 
 var app = builder.Build();
@@ -41,6 +43,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthorization();
 app.UseAuthorization();
 
 app.MapControllerRoute(
