@@ -8,6 +8,13 @@ public class RoomRequirementConfiguration : IEntityTypeConfiguration<RoomRequire
 {
     public void Configure(EntityTypeBuilder<RoomRequirement> builder)
     {
+        builder.ToTable("RoomRequirements", table =>
+        {
+            table.HasCheckConstraint(
+                "CK_RoomRequirements_RequiredCount",
+                "\"RequiredCount\" BETWEEN 1 AND 30");
+        });
+
         builder.HasOne(x => x.Room)
             .WithMany(x => x.RoomRequirements)
             .HasForeignKey(x => x.RoomId)
