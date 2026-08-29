@@ -10,7 +10,7 @@ public class ExtinguisherTypeConfiguration : IEntityTypeConfiguration<Extinguish
     {
         builder.Property(x => x.Name)
             .IsRequired()
-            .HasMaxLength(100);
+            .HasMaxLength(30);
 
         builder.Property(x => x.Description)
             .HasMaxLength(500);

@@ -26,3 +26,7 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.crud-result-dialog {
+    margin-top: 0.5rem;
+}

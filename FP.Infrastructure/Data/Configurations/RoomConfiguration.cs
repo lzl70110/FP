@@ -20,7 +20,7 @@ public class RoomConfiguration
 
         builder
             .Property(r => r.Notes)
-            .HasMaxLength(1000);
+            .HasMaxLength(150);
 
         builder
             .HasOne(r => r.Department)

@@ -1,6 +1,9 @@
-﻿using FP.Application.Common;
+﻿ 
+using FP.Application.Common;
 using FP.Application.Contracts.Services;
 using FP.Domain.Entities.Departments;
+using FP.Web.Extensions;
+using FP.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FP.Web.Controllers;
@@ -61,7 +64,7 @@ public class DepartmentsController : Controller
             return View(department);
         }
 
-        await crudService.ExecuteAsync(
+        var result = await crudService.ExecuteAsync(
             CrudCommand.Create,
             properties:
             [
@@ -81,6 +84,17 @@ public class DepartmentsController : Controller
                     Value = department.IsActive
                 }
             ]);
+
+        if (result != null)
+        {
+            TempData.SetCrudResult(
+                new CrudResultViewModel
+                {
+                    Type = CrudResultType.Success,
+                    Title = "Успешно",
+                    Message = $"Отделът „{result.Name}“ беше създаден успешно."
+                });
+        }
 
         return RedirectToAction(nameof(Index));
     }
@@ -107,7 +121,7 @@ public class DepartmentsController : Controller
             return View(department);
         }
 
-        await crudService.ExecuteAsync(
+        var result = await crudService.ExecuteAsync(
             CrudCommand.Update,
             department.Id,
             [
@@ -128,6 +142,27 @@ public class DepartmentsController : Controller
                 }
             ]);
 
+        if (result != null)
+        {
+            TempData.SetCrudResult(
+                new CrudResultViewModel
+                {
+                    Type = CrudResultType.Success,
+                    Title = "Успешно",
+                    Message = $"Отделът „{result.Name}“ беше променен успешно."
+                });
+        }
+        else
+        {
+            TempData.SetCrudResult(
+                new CrudResultViewModel
+                {
+                    Type = CrudResultType.Warning,
+                    Title = "Внимание",
+                    Message = "Отделът не беше намерен и не беше променен."
+                });
+        }
+
         return RedirectToAction(nameof(Index));
     }
 
@@ -135,9 +170,30 @@ public class DepartmentsController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Delete(int id)
     {
-        await crudService.ExecuteAsync(
+        var result = await crudService.ExecuteAsync(
             CrudCommand.Delete,
             id);
+
+        if (result != null)
+        {
+            TempData.SetCrudResult(
+                new CrudResultViewModel
+                {
+                    Type = CrudResultType.Success,
+                    Title = "Успешно",
+                    Message = $"Отделът „{result.Name}“ беше изтрит успешно."
+                });
+        }
+        else
+        {
+            TempData.SetCrudResult(
+                new CrudResultViewModel
+                {
+                    Type = CrudResultType.Warning,
+                    Title = "Внимание",
+                    Message = "Отделът не беше намерен и не беше изтрит."
+                });
+        }
 
         return RedirectToAction(nameof(Index));
     }
@@ -146,10 +202,32 @@ public class DepartmentsController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Undelete(int id)
     {
-        await crudService.ExecuteAsync(
+        var result = await crudService.ExecuteAsync(
             CrudCommand.Undelete,
             id);
+
+        if (result != null)
+        {
+            TempData.SetCrudResult(
+                new CrudResultViewModel
+                {
+                    Type = CrudResultType.Success,
+                    Title = "Успешно",
+                    Message = $"Отделът „{result.Name}“ беше възстановен успешно."
+                });
+        }
+        else
+        {
+            TempData.SetCrudResult(
+                new CrudResultViewModel
+                {
+                    Type = CrudResultType.Warning,
+                    Title = "Внимание",
+                    Message = "Отделът не беше намерен и не беше възстановен."
+                });
+        }
 
         return RedirectToAction(nameof(Deleted));
     }
 }
+ 

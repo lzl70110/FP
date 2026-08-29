@@ -1,0 +1,64 @@
+﻿@using FP.Web.Extensions
+@using FP.Web.Models
+
+@{
+    var result = TempData.GetCrudResult();
+
+    var icon = "bi-info-circle-fill";
+    var alertClass = "text-info";
+
+    if (result != null)
+    {
+        (icon, alertClass) = result.Type switch
+        {
+            CrudResultType.Success => ("bi-check-circle-fill", "text-success"),
+            CrudResultType.Info => ("bi-info-circle-fill", "text-info"),
+            CrudResultType.Warning => ("bi-exclamation-triangle-fill", "text-warning"),
+            CrudResultType.Error => ("bi-x-circle-fill", "text-danger"),
+            _ => ("bi-info-circle-fill", "text-info")
+        };
+    }
+}
+
+@if (result != null)
+{
+    <div class="modal fade"
+         id="crudResultModal"
+         tabindex="-1"
+         aria-labelledby="crudResultModalLabel"
+         aria-hidden="true">
+
+        <div class="modal-dialog modal-lg crud-result-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header py-2">
+                    <h5 class="modal-title" id="crudResultModalLabel">
+                        <i class="bi @icon @alertClass me-2"></i>
+                        @result.Title
+                    </h5>
+                </div>
+
+                <div class="modal-body py-2">
+                    @result.Message
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const modalElement = document.getElementById("crudResultModal");
+
+            if (modalElement) {
+                const modal = new bootstrap.Modal(modalElement);
+
+                modal.show();
+
+                setTimeout(function () {
+                    modal.hide();
+                }, 4000);
+            }
+        });
+    </script>
+}

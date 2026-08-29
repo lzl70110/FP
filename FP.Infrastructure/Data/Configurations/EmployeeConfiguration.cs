@@ -16,7 +16,7 @@ public class EmployeeConfiguration
         builder
             .Property(e => e.WorkNumber)
             .IsRequired()
-            .HasMaxLength(20);
+            .HasMaxLength(4);
 
         builder
             .Property(e => e.FirstName)
