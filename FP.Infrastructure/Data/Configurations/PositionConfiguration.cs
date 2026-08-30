@@ -20,5 +20,9 @@ public class PositionConfiguration
         builder
             .Property(p => p.Notes)
             .HasMaxLength(1000);
+
+        builder
+            .HasIndex(p => p.Name)
+            .IsUnique();
     }
 }
