@@ -1,17 +1,18 @@
-﻿using FP.Application.Contracts.Repositories;
+﻿ 
+using FP.Application.Contracts.Repositories;
 using FP.Application.Contracts.Services;
 using FP.Domain.Entities.Departments;
+using FP.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace FP.Infrastructure.Services;
 
-public class DepartmentService : IDepartmentService
+public class DepartmentService(
+    IRepository<Department> repository,
+    AppDbContext context) : IDepartmentService
 {
-    private readonly IRepository<Department> repository;
-
-    public DepartmentService(IRepository<Department> repository)
-    {
-        this.repository = repository;
-    }
+    private readonly IRepository<Department> repository = repository;
+    private readonly AppDbContext context = context;
 
     public async Task<List<Department>> GetAllAsync()
     {
@@ -28,45 +29,12 @@ public class DepartmentService : IDepartmentService
         return await repository.GetByIdAsync(id);
     }
 
-    public async Task CreateAsync(Department department)
+    public async Task<Department?> GetDetailsAsync(int id)
     {
-        await repository.AddAsync(department);
-        await repository.SaveChangesAsync();
-    }
-
-    public async Task UpdateAsync(Department department)
-    {
-        repository.Update(department);
-        await repository.SaveChangesAsync();
-    }
-
-    public async Task DeleteAsync(int id)
-    {
-        var department = await repository.GetByIdAsync(id);
-
-        if (department == null)
-        {
-            return;
-        }
-
-        repository.Delete(department);
-        await repository.SaveChangesAsync();
-    }
-
-    public async Task UndeleteAsync(int id)
-    {
-        var department = await repository.GetDeletedByIdAsync(id);
-
-        if (department == null)
-        {
-            return;
-        }
-
-        department.IsDeleted = false;
-        department.DeletedAt = null;
-        department.DeletedById = null;
-
-        repository.Update(department);
-        await repository.SaveChangesAsync();
+        return await context.Departments
+            .Include(d => d.DepartmentPositions)
+                .ThenInclude(dp => dp.Position)
+            .FirstOrDefaultAsync(d => d.Id == id);
     }
 }
+ 

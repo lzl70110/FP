@@ -9,12 +9,4 @@ public interface IEmployeeService
     Task<List<Employee>> GetDeletedAsync();
 
     Task<Employee?> GetByIdAsync(int id);
-
-    Task CreateAsync(Employee employee);
-
-    Task UpdateAsync(Employee employee);
-
-    Task DeleteAsync(int id);
-
-    Task UndeleteAsync(int id);
 }

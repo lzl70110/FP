@@ -1,0 +1,71 @@
+﻿@using FP.Domain.Entities.Positions
+@model List<Position>
+
+@{
+    ViewData["Title"] = "Длъжности";
+}
+
+<h1>Длъжности</h1>
+
+<div class="mb-3">
+    <a asp-action="Create" class="btn btn-primary">
+        <i class="bi bi-plus-circle"></i>
+        Създай длъжност
+    </a>
+
+    <a asp-action="Deleted" class="btn btn-secondary">
+        <i class="bi bi-trash"></i>
+        Изтрити длъжности
+    </a>
+
+</div>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Наименование</th>
+            <th>Бележки</th>
+            <th>Активна</th>
+            <th></th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var position in Model)
+        {
+            <tr>
+                <td>@position.Name</td>
+                <td>@position.Notes</td>
+                <td>
+                    @(position.IsActive ? "Да" : "Не")
+                </td>
+                <td>
+                    <a asp-action="Edit"
+                       asp-route-id="@position.Id"
+                       class="btn btn-sm btn-warning">
+                        Редактирай
+                    </a>
+
+                    <a asp-action="Details"
+                       asp-route-id="@position.Id"
+                       class="btn btn-sm btn-info">
+                        Детайли
+                    </a>
+
+                    <form asp-action="Delete"
+                          asp-route-id="@position.Id"
+                          method="post"
+                          class="d-inline">
+                        @Html.AntiForgeryToken()
+
+                        <button type="submit"
+                                class="btn btn-sm btn-danger">
+                            Изтрий
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+
+</table>

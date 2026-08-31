@@ -1,4 +1,5 @@
-﻿using FP.Application.Contracts.Repositories;
+﻿ 
+using FP.Application.Contracts.Repositories;
 using FP.Domain.Common;
 using FP.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -57,8 +58,8 @@ public class Repository<TEntity> : IRepository<TEntity>
 
     public void Delete(TEntity entity)
     {
+        // Самата audit информация се задава централизирано в AppDbContext.
         entity.IsDeleted = true;
-        entity.DeletedAt = DateTime.UtcNow;
 
         context.Set<TEntity>()
             .Update(entity);
@@ -76,3 +77,4 @@ public class Repository<TEntity> : IRepository<TEntity>
             .FirstOrDefaultAsync(x => x.Id == id && x.IsDeleted);
     }
 }
+ 

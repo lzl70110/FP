@@ -1,4 +1,5 @@
-﻿using FP.Domain.Common;
+﻿ 
+using FP.Domain.Common;
 using FP.Domain.Entities.Checkers;
 using FP.Domain.Entities.DepartmentPositions;
 using FP.Domain.Entities.Departments;
@@ -12,6 +13,9 @@ namespace FP.Infrastructure.Data;
 
 public class AppDbContext : DbContext
 {
+    // Временно използваме System, докато въведем Identity.
+    private const string SystemUser = "System";
+
     public AppDbContext(
         DbContextOptions<AppDbContext> options)
         : base(options)
@@ -27,20 +31,38 @@ public class AppDbContext : DbContext
     public DbSet<DepartmentPosition> DepartmentPositions { get; set; } = null!;
 
     public override async Task<int> SaveChangesAsync(
-     CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default)
     {
         var entries = ChangeTracker
             .Entries<SoftDeletableEntity>();
 
         foreach (var entry in entries)
         {
-            if (entry.State == EntityState.Added)
+            switch (entry.State)
             {
-                entry.Entity.CreatedAt = DateTime.UtcNow;
-            }
-            else if (entry.State == EntityState.Modified)
-            {
-                entry.Entity.UpdatedAt = DateTime.UtcNow;
+                case EntityState.Added:
+
+                    // При създаване записваме дата и системен потребител.
+                    entry.Entity.CreatedAt = DateTime.UtcNow;
+                    entry.Entity.CreatedById = SystemUser;
+                    break;
+
+                case EntityState.Modified:
+
+                    // Soft delete се обработва отделно от обикновената промяна.
+                    if (entry.Entity.IsDeleted)
+                    {
+                        entry.Entity.DeletedAt = DateTime.UtcNow;
+                        entry.Entity.DeletedById = SystemUser;
+                    }
+                    else
+                    {
+                        // При промяна записваме дата и системен потребител.
+                        entry.Entity.UpdatedAt = DateTime.UtcNow;
+                        entry.Entity.UpdatedById = SystemUser;
+                    }
+
+                    break;
             }
         }
 
@@ -51,12 +73,14 @@ public class AppDbContext : DbContext
     {
         base.OnModelCreating(builder);
 
+        // Зареждаме всички Fluent API конфигурации от Infrastructure.
         builder.ApplyConfigurationsFromAssembly(
             typeof(AppDbContext).Assembly);
 
         foreach (var entityType in builder.Model.GetEntityTypes())
         {
-            if (typeof(SoftDeletableEntity).IsAssignableFrom(entityType.ClrType))
+            if (typeof(SoftDeletableEntity)
+                .IsAssignableFrom(entityType.ClrType))
             {
                 var parameter = Expression.Parameter(
                     entityType.ClrType,
@@ -72,8 +96,10 @@ public class AppDbContext : DbContext
                         Expression.Constant(false)),
                     parameter);
 
+                // Скриваме soft-deleted записите от стандартните заявки.
                 entityType.SetQueryFilter(filter);
             }
         }
     }
 }
+ 

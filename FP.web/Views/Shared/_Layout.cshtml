@@ -58,38 +58,9 @@
             <!-- Sidebar navigation -->
             <aside class="col-md-2 border-end min-vh-100 pt-3">
 
-                <nav>
-                    <ul class="nav flex-column fs-5">
+                <partial name="~/Views/Shared/_MainMenu.cshtml" />
 
-                        <li class="nav-item">
-                            <a class="nav-link"
-                               asp-area=""
-                               asp-controller="Home"
-                               asp-action="Index">
-                                Начало
-                            </a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link"
-                               asp-area=""
-                               asp-controller="Departments"
-                               asp-action="Index">
-                                Отдели
-                            </a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link"
-                               asp-area=""
-                               asp-controller="Home"
-                               asp-action="Privacy">
-                                Поверителност
-                            </a>
-                        </li>
-
-                    </ul>
-                </nav>
+                <partial name="~/Views/Shared/_AdminMenu.cshtml" />
 
             </aside>
 
@@ -107,7 +78,7 @@
     <!-- Footer -->
     <footer class="border-top footer text-muted mt-auto">
         <div class="container py-3">
-            © август 2026 · Дизайн и разработка: Любомир Чекански
+            © @DateTime.Now.Year · Дизайн и разработка: Любомир Чекански
         </div>
     </footer>
 

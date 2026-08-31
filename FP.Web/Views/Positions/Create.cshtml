@@ -1,0 +1,28 @@
+﻿@model FP.Web.Models.Forms.NamedActiveEntityViewModel
+
+@{
+    ViewData["Title"] = "Нова длъжност";
+}
+
+<h1>Нова длъжност</h1>
+
+<form asp-action="Create" method="post">
+ 
+    @Html.EditorForModel()
+
+    <button type="submit" class="btn btn-primary">
+        Запиши
+    </button>
+
+    <a asp-action="Index" class="btn btn-secondary">
+        Назад
+    </a>
+  
+
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

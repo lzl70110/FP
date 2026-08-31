@@ -1,5 +1,5 @@
-﻿ 
-using FP.Domain.Common;
+﻿using FP.Domain.Common;
+using FP.Domain.Entities.DepartmentPositions;
 using FP.Domain.Entities.Rooms;
 using System.ComponentModel.DataAnnotations;
 
@@ -10,17 +10,22 @@ public class Department : SoftDeletableEntity
     [Display(Name = "Наименование")]
     [Required(ErrorMessage = "Наименованието е задължително.")]
     [StringLength(100, MinimumLength = 2,
-        ErrorMessage = "Наименованието трябва да бъде между 2 и 100 символа.")]
+    ErrorMessage = "Наименованието трябва да бъде между 2 и 100 символа.")]
     public string Name { get; set; } = null!;
 
-    [Display(Name = "Забележка")]
+ 
+[Display(Name = "Забележка")]
     [StringLength(1000,
-        ErrorMessage = "Забележката не може да надвишава 1000 символа.")]
+    ErrorMessage = "Забележката не може да надвишава 1000 символа.")]
     public string? Notes { get; set; }
 
     public bool IsActive { get; set; } = true;
 
     public ICollection<Room> Rooms { get; set; }
         = new HashSet<Room>();
+
+    public ICollection<DepartmentPosition> DepartmentPositions { get; set; }
+        = new HashSet<DepartmentPosition>();
+ 
+
 }
-  

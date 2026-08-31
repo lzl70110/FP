@@ -1,4 +1,5 @@
-﻿using FP.Domain.Entities.Departments;
+﻿ 
+using FP.Domain.Entities.Departments;
 
 namespace FP.Application.Contracts.Services;
 
@@ -10,11 +11,6 @@ public interface IDepartmentService
 
     Task<Department?> GetByIdAsync(int id);
 
-    Task CreateAsync(Department department);
-
-    Task UpdateAsync(Department department);
-
-    Task DeleteAsync(int id);
-
-    Task UndeleteAsync(int id);
+    Task<Department?> GetDetailsAsync(int id);
 }
+ 

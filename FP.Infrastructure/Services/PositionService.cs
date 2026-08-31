@@ -1,30 +1,30 @@
 ﻿ 
 using FP.Application.Contracts.Repositories;
 using FP.Application.Contracts.Services;
-using FP.Domain.Entities.Employees;
+using FP.Domain.Entities.Positions;
 
 namespace FP.Infrastructure.Services;
 
-public class EmployeeService : IEmployeeService
+public class PositionService : IPositionService
 {
-    private readonly IRepository<Employee> repository;
+    private readonly IRepository<Position> repository;
 
-    public EmployeeService(IRepository<Employee> repository)
+    public PositionService(IRepository<Position> repository)
     {
         this.repository = repository;
     }
 
-    public async Task<List<Employee>> GetAllAsync()
+    public async Task<List<Position>> GetAllAsync()
     {
         return await repository.GetAllAsync();
     }
 
-    public async Task<List<Employee>> GetDeletedAsync()
+    public async Task<List<Position>> GetDeletedAsync()
     {
         return await repository.GetDeletedAsync();
     }
 
-    public async Task<Employee?> GetByIdAsync(int id)
+    public async Task<Position?> GetByIdAsync(int id)
     {
         return await repository.GetByIdAsync(id);
     }

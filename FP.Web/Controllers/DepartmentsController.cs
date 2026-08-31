@@ -1,5 +1,4 @@
-﻿ 
-using FP.Application.Common;
+﻿using FP.Application.Common;
 using FP.Application.Contracts.Services;
 using FP.Domain.Entities.Departments;
 using FP.Web.Extensions;
@@ -8,18 +7,12 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FP.Web.Controllers;
 
-public class DepartmentsController : Controller
+public class DepartmentsController(
+    IDepartmentService service,
+    ICrudService<Department> crudService) : Controller
 {
-    private readonly IDepartmentService service;
-    private readonly ICrudService<Department> crudService;
-
-    public DepartmentsController(
-        IDepartmentService service,
-        ICrudService<Department> crudService)
-    {
-        this.service = service;
-        this.crudService = crudService;
-    }
+    private readonly IDepartmentService service = service;
+    private readonly ICrudService<Department> crudService = crudService;
 
     public async Task<IActionResult> Index()
     {
@@ -30,9 +23,7 @@ public class DepartmentsController : Controller
 
     public async Task<IActionResult> Details(int id)
     {
-        var department = await crudService.ExecuteAsync(
-            CrudCommand.Read,
-            id);
+        var department = await service.GetDetailsAsync(id);
 
         if (department == null)
         {
@@ -69,20 +60,20 @@ public class DepartmentsController : Controller
             properties:
             [
                 new CrudProperty
-                {
-                    Name = nameof(Department.Name),
-                    Value = department.Name
-                },
-                new CrudProperty
-                {
-                    Name = nameof(Department.Notes),
-                    Value = department.Notes
-                },
-                new CrudProperty
-                {
-                    Name = nameof(Department.IsActive),
-                    Value = department.IsActive
-                }
+            {
+                Name = nameof(Department.Name),
+                Value = department.Name
+            },
+            new CrudProperty
+            {
+                Name = nameof(Department.Notes),
+                Value = department.Notes
+            },
+            new CrudProperty
+            {
+                Name = nameof(Department.IsActive),
+                Value = department.IsActive
+            }
             ]);
 
         if (result != null)
@@ -126,20 +117,20 @@ public class DepartmentsController : Controller
             department.Id,
             [
                 new CrudProperty
-                {
-                    Name = nameof(Department.Name),
-                    Value = department.Name
-                },
-                new CrudProperty
-                {
-                    Name = nameof(Department.Notes),
-                    Value = department.Notes
-                },
-                new CrudProperty
-                {
-                    Name = nameof(Department.IsActive),
-                    Value = department.IsActive
-                }
+            {
+                Name = nameof(Department.Name),
+                Value = department.Name
+            },
+            new CrudProperty
+            {
+                Name = nameof(Department.Notes),
+                Value = department.Notes
+            },
+            new CrudProperty
+            {
+                Name = nameof(Department.IsActive),
+                Value = department.IsActive
+            }
             ]);
 
         if (result != null)
@@ -229,5 +220,6 @@ public class DepartmentsController : Controller
 
         return RedirectToAction(nameof(Deleted));
     }
+
+
 }
- 

@@ -5,17 +5,18 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 namespace FP.Infrastructure.Data.Configurations;
 
 public class DepartmentPositionConfiguration
-    : IEntityTypeConfiguration<DepartmentPosition>
+: IEntityTypeConfiguration<DepartmentPosition>
 {
     public void Configure(EntityTypeBuilder<DepartmentPosition> builder)
     {
         builder.ToTable("DepartmentPositions");
 
-        builder.HasKey(dp => dp.Id);
+ 
+    builder.HasKey(dp => dp.Id);
 
         builder
             .HasOne(dp => dp.Department)
-            .WithMany()
+            .WithMany(d => d.DepartmentPositions)
             .HasForeignKey(dp => dp.DepartmentId)
             .OnDelete(DeleteBehavior.Restrict);
 
@@ -29,4 +30,6 @@ public class DepartmentPositionConfiguration
             .HasIndex(dp => new { dp.DepartmentId, dp.PositionId })
             .IsUnique();
     }
+ 
+
 }

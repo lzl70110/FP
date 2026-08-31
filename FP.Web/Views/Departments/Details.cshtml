@@ -10,6 +10,7 @@
 
 <div class="col-md-6">
 
+ 
     <div class="mb-3">
         <label asp-for="Name" class="form-label"></label>
         <input asp-for="Name" class="form-control" readonly />
@@ -17,13 +18,49 @@
 
     <div class="mb-3">
         <label asp-for="Notes" class="form-label"></label>
-        <textarea asp-for="Notes" class="form-control" rows="3" readonly></textarea>
+        <textarea asp-for="Notes"
+                  class="form-control"
+                  rows="3"
+                  readonly></textarea>
     </div>
 
     <div class="form-check mb-3">
-        <input asp-for="IsActive" class="form-check-input" disabled />
-        <label asp-for="IsActive" class="form-check-label"></label>
+        <input asp-for="IsActive"
+               class="form-check-input"
+               disabled />
+        <label asp-for="IsActive"
+               class="form-check-label"></label>
     </div>
+
+    <hr />
+
+    <h5>Длъжности</h5>
+
+    @if (Model.DepartmentPositions.Any())
+    {
+        <ul class="list-group mb-3">
+            @foreach (var departmentPosition in Model.DepartmentPositions)
+            {
+                <li class="list-group-item">
+                    @departmentPosition.Position.Name
+                </li>
+            }
+        </ul>
+    }
+    else
+    {
+        <p class="text-muted">
+            Няма добавени длъжности.
+        </p>
+    }
+
+    <a asp-controller="Positions"
+       asp-action="Create"
+       asp-route-departmentId="@Model.Id"
+       class="btn btn-success mb-3">
+        <i class="bi bi-plus-circle"></i>
+        Нова длъжност
+    </a>
 
     <hr />
 
@@ -32,13 +69,17 @@
     <dl class="row">
         <dt class="col-sm-4">Създаден на</dt>
         <dd class="col-sm-8">
-            @DateTimeService.UtcToLocal(Model.CreatedAt).ToString("dd.MM.yyyy HH:mm")
+            @DateTimeService
+            .UtcToLocal(Model.CreatedAt)
+            .ToString("dd.MM.yyyy HH:mm")
         </dd>
 
         <dt class="col-sm-4">Последна промяна</dt>
         <dd class="col-sm-8">
             @(Model.UpdatedAt.HasValue
-                        ? DateTimeService.UtcToLocal(Model.UpdatedAt.Value).ToString("dd.MM.yyyy HH:mm")
+                        ? DateTimeService
+                        .UtcToLocal(Model.UpdatedAt.Value)
+                        .ToString("dd.MM.yyyy HH:mm")
                         : "—")
         </dd>
 
@@ -47,18 +88,24 @@
             <dt class="col-sm-4">Изтрит на</dt>
             <dd class="col-sm-8">
                 @(Model.DeletedAt.HasValue
-                            ? DateTimeService.UtcToLocal(Model.DeletedAt.Value).ToString("dd.MM.yyyy HH:mm")
+                            ? DateTimeService
+                            .UtcToLocal(Model.DeletedAt.Value)
+                            .ToString("dd.MM.yyyy HH:mm")
                             : "—")
         </dd>
                 }
     </dl>
 
-    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">
+    <a asp-action="Edit"
+       asp-route-id="@Model.Id"
+       class="btn btn-primary">
         Редактирай
     </a>
 
-    <a asp-action="Index" class="btn btn-secondary">
+    <a asp-action="Index"
+       class="btn btn-secondary">
         Назад
     </a>
+ 
 
 </div>
