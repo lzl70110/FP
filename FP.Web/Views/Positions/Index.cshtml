@@ -1,5 +1,4 @@
-﻿@using FP.Domain.Entities.DepartmentPositions
-@model List<DepartmentPosition>
+﻿@model List<FP.Domain.Entities.Positions.Position>
 
 @{
     ViewData["Title"] = "Длъжности";
@@ -16,11 +15,14 @@
         Създай длъжност
     </a>
 
+    
     <a asp-action="Deleted"
        class="btn btn-secondary">
         <i class="bi bi-trash"></i>
         Изтрити длъжности
     </a>
+    
+
 </div>
 
 <table class="table table-striped">
@@ -33,11 +35,10 @@
         </tr>
     </thead>
 
+    
     <tbody>
-        @foreach (var departmentPosition in Model)
+        @foreach (var position in Model)
         {
-            var position = departmentPosition.Position;
-
             <tr>
                 <td>@position.Name</td>
 
@@ -64,18 +65,20 @@
 
                     <form asp-action="Delete"
                           asp-route-departmentId="@departmentId"
-                          asp-route-positionId="@position.Id"
+                          asp-route-id="@position.Id"
                           method="post"
                           class="d-inline">
                         @Html.AntiForgeryToken()
 
                         <button type="submit"
                                 class="btn btn-sm btn-danger">
-                            Премахни
+                            Изтрий
                         </button>
                     </form>
                 </td>
             </tr>
         }
     </tbody>
+    
+
 </table>

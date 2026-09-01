@@ -1,4 +1,4 @@
-﻿```csharp
+﻿
 using FP.Domain.Common;
 using FP.Domain.Entities.Positions;
 using System.ComponentModel.DataAnnotations;
@@ -49,4 +49,3 @@ public class Employee : SoftDeletableEntity
 
     public bool IsActive { get; set; } = true;
 }
-```

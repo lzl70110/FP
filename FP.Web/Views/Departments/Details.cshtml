@@ -9,7 +9,6 @@
 <h1>Детайли за отдел</h1>
 
 <div class="col-md-6">
-
  
     <div class="mb-3">
         <label asp-for="Name" class="form-label"></label>
@@ -36,13 +35,13 @@
 
     <h5>Длъжности</h5>
 
-    @if (Model.DepartmentPositions.Any())
+    @if (Model.Positions.Any())
     {
         <ul class="list-group mb-3">
-            @foreach (var departmentPosition in Model.DepartmentPositions)
+            @foreach (var position in Model.Positions)
             {
                 <li class="list-group-item">
-                    @departmentPosition.Position.Name
+                    @position.Name
                 </li>
             }
         </ul>
