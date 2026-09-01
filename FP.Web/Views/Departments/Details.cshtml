@@ -1,18 +1,21 @@
-﻿@model FP.Domain.Entities.Departments.Department
+﻿ 
+@model FP.Domain.Entities.Departments.Department
 @using FP.Infrastructure.Services
 @inject DateTimeService DateTimeService
 
 @{
-    ViewData["Title"] = "Детайли за отдел";
+    ViewData["Title"] = $"Звено: {Model.Name}";
 }
 
-<h1>Детайли за отдел</h1>
+<h1>Звено: @Model.Name</h1>
 
-<div class="col-md-6">
- 
+<div class="col-md-8">
+
     <div class="mb-3">
         <label asp-for="Name" class="form-label"></label>
-        <input asp-for="Name" class="form-control" readonly />
+        <input asp-for="Name"
+               class="form-control"
+               readonly />
     </div>
 
     <div class="mb-3">
@@ -23,7 +26,7 @@
                   readonly></textarea>
     </div>
 
-    <div class="form-check mb-3">
+    <div class="form-check mb-4">
         <input asp-for="IsActive"
                class="form-check-input"
                disabled />
@@ -33,47 +36,55 @@
 
     <hr />
 
-    <h5>Длъжности</h5>
+    <h4 class="mb-3">Управление</h4>
 
-    @if (Model.Positions.Any())
-    {
-        <ul class="list-group mb-3">
-            @foreach (var position in Model.Positions)
-            {
-                <li class="list-group-item">
-                    @position.Name
-                </li>
-            }
-        </ul>
-    }
-    else
-    {
-        <p class="text-muted">
-            Няма добавени длъжности.
-        </p>
-    }
+    <div class="d-flex flex-wrap gap-2 mb-4">
 
-    <a asp-controller="Positions"
-       asp-action="Create"
-       asp-route-departmentId="@Model.Id"
-       class="btn btn-success mb-3">
-        <i class="bi bi-plus-circle"></i>
-        Нова длъжност
-    </a>
+        <a asp-action="Edit"
+           asp-route-id="@Model.Id"
+           class="btn btn-primary">
+            <i class="bi bi-gear"></i>
+            Редактиране на звеното
+        </a>
+
+        <a asp-controller="Positions"
+           asp-action="Index"
+           asp-route-departmentId="@Model.Id"
+           class="btn btn-secondary">
+            <i class="bi bi-tools"></i>
+            Длъжности
+        </a>
+
+        <a asp-controller="Employees"
+           asp-action="Index"
+           asp-route-departmentId="@Model.Id"
+           class="btn btn-secondary">
+            <i class="bi bi-person-badge"></i>
+            Служители
+        </a>
+
+    </div>
 
     <hr />
 
-    <h5>Одитна информация</h5>
+    <h4 class="mb-3">Одитна информация</h4>
 
     <dl class="row">
-        <dt class="col-sm-4">Създаден на</dt>
+
+        <dt class="col-sm-4">
+            Създадено на
+        </dt>
+
         <dd class="col-sm-8">
-            @DateTimeService
-            .UtcToLocal(Model.CreatedAt)
-            .ToString("dd.MM.yyyy HH:mm")
+            @(DateTimeService
+                        .UtcToLocal(Model.CreatedAt)
+                        .ToString("dd.MM.yyyy HH:mm"))
         </dd>
 
-        <dt class="col-sm-4">Последна промяна</dt>
+        <dt class="col-sm-4">
+            Последна промяна
+        </dt>
+
         <dd class="col-sm-8">
             @(Model.UpdatedAt.HasValue
                         ? DateTimeService
@@ -84,7 +95,10 @@
 
         @if (Model.IsDeleted)
         {
-            <dt class="col-sm-4">Изтрит на</dt>
+            <dt class="col-sm-4">
+                Изтрито на
+            </dt>
+
             <dd class="col-sm-8">
                 @(Model.DeletedAt.HasValue
                             ? DateTimeService
@@ -93,18 +107,14 @@
                             : "—")
         </dd>
                 }
+
     </dl>
 
-    <a asp-action="Edit"
-       asp-route-id="@Model.Id"
-       class="btn btn-primary">
-        Редактирай
-    </a>
-
     <a asp-action="Index"
-       class="btn btn-secondary">
-        Назад
+       class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left"></i>
+        Назад към звената
     </a>
- 
 
 </div>
+ 
