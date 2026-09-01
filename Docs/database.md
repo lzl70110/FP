@@ -1,7 +1,7 @@
 ﻿# Database Design
 
-Версия: 2.2
-Последна актуализация: 30.08.2026
+Версия: 2.3
+Последна актуализация: 01.09.2026
 
 Документът описва структурата на базата данни на системата за управление и проверка на пожарогасители.
 
@@ -83,11 +83,34 @@ AuditableEntity
 
 ---
 
+# Организационен модел
+
+Основната организационна структура е:
+
+```text
+Department
+   │
+   └── Position
+          │
+          └── Employee
+```
+
+Връзките са директни:
+
+```text
+Department 1 ──── * Position
+Position   1 ──── * Employee
+```
+
+Междинна таблица между `Department` и `Position` не се използва.
+
+---
+
 # Таблици
 
 ## Departments
 
-Съдържа организационните отдели.
+Съдържа организационните звена.
 
 ```text
 Departments
@@ -104,10 +127,19 @@ Departments
 └── DeletedById
 ```
 
+В UI таблицата и entity-то се представят като **„Звена“**, въпреки че техническото име остава `Department`.
+
 Ограничения:
 
 * `Name` е задължително поле
 * `Name` има максимална дължина 100 символа
+
+Връзки:
+
+```text
+Department 1 ──── * Position
+Department 1 ──── * Room
+```
 
 CRUD операциите за `Department` са реализирани.
 
@@ -123,13 +155,14 @@ CRUD операциите за `Department` са реализирани.
 
 ## Positions
 
-Съдържа длъжностите.
+Съдържа длъжностите в организационните звена.
 
 ```text
 Positions
 ├── Id
 ├── Name
 ├── Notes
+├── DepartmentId
 ├── IsDeleted
 ├── CreatedAt
 ├── CreatedById
@@ -139,42 +172,44 @@ Positions
 └── DeletedById
 ```
 
+### DepartmentId
+
+`DepartmentId` представлява задължителен foreign key към `Departments`.
+
+Връзка:
+
+```text
+Department 1 ──── * Position
+```
+
+### Name
+
 Ограничения:
 
 * `Name` е задължително поле
 * `Name` има максимална дължина 100 символа
 
----
+Името на длъжността не е глобално уникално.
 
-## DepartmentPositions
-
-Свързва отдели и длъжности.
+Уникалността се гарантира в рамките на звеното чрез:
 
 ```text
-DepartmentPositions
-├── Id
-├── DepartmentId
-├── PositionId
-└── Soft Delete / Audit fields
+DepartmentId + Name
 ```
 
-Връзки:
+Следователно е допустимо:
 
 ```text
-Department 1 ──── * DepartmentPosition * ──── 1 Position
+Звено A
+    └── Монтьор
+
+Звено B
+    └── Монтьор
 ```
 
-Комбинацията:
+но в едно и също звено не могат да съществуват две длъжности със същото име.
 
-```text
-DepartmentId + PositionId
-```
-
-е уникална.
-
-Това предотвратява дублиране на една и съща длъжност в един и същи отдел.
-
-При изтриване на отдел или длъжност се използва:
+При изтриване на звено се използва:
 
 ```text
 DeleteBehavior.Restrict
@@ -193,11 +228,16 @@ Employees
 ├── FirstName
 ├── MiddleName
 ├── LastName
-├── DepartmentId
 ├── PositionId
 ├── Notes
 ├── IsActive
-└── Soft Delete / Audit fields
+├── IsDeleted
+├── CreatedAt
+├── CreatedById
+├── UpdatedAt
+├── UpdatedById
+├── DeletedAt
+└── DeletedById
 ```
 
 ### WorkNumber
@@ -212,36 +252,51 @@ Employees
 
 На ниво база данни се използва уникален индекс.
 
-### Връзки
+### PositionId
+
+`PositionId` представлява задължителен foreign key към `Positions`.
+
+Връзката е:
 
 ```text
-Department 1 ──── * Employee
-Position   1 ──── * Employee
+Position 1 ──── * Employee
 ```
 
-Служителят задължително принадлежи към:
+Служителят **няма собствен `DepartmentId`**.
 
-* `Department`
-* `Position`
+Звеното на служителя се определя чрез неговата длъжност:
 
-Връзките се реализират чрез foreign keys.
+```text
+Employee
+   ↓
+Position
+   ↓
+Department
+```
 
-При изтриване на свързан отдел или длъжност се използва:
+Това предотвратява дублиране на организационната зависимост.
+
+### Бизнес зависимост
+
+Служителят не може да съществува без валидна длъжност.
+
+Длъжността от своя страна не може да съществува без валидно звено.
+
+Следователно организационната зависимост е:
+
+```text
+Department
+    ↓
+Position
+    ↓
+Employee
+```
+
+При изтриване на длъжност се използва:
 
 ```text
 DeleteBehavior.Restrict
 ```
-
-### Бизнес зависимост
-
-Създаването на служител е зависимо от наличието на валидни:
-
-* отдел
-* длъжност
-
-На ниво база данни тази зависимост се подсигурява чрез foreign keys.
-
-Допълнителното правило за наличност на необходимите зависимости при работа с UI се реализира на application/UI ниво.
 
 ---
 
@@ -413,28 +468,39 @@ DeleteBehavior.Restrict
 ```text
 Department
    │
-   ├── Employee
+   ├── Position
    │      │
-   │      └── Checker
+   │      └── Employee
+   │             │
+   │             └── Checker
    │
-   ├── Room
-   │      │
-   │      └── RoomRequirement
-   │                 │
-   │                 └── ExtinguisherType
-   │
-   └── DepartmentPosition
-              │
-              └── Position
-                     │
-                     └── Employee
+   └── Room
+          │
+          └── RoomRequirement
+                       │
+                       └── ExtinguisherType
+                              │
+                              └── Extinguisher
+```
 
+По-подробно:
 
-ExtinguisherType
-   │
-   ├── Extinguisher
-   │
-   └── RoomRequirement
+```text
+Department
+    │
+    ├── Position
+    │      │
+    │      └── Employee
+    │             │
+    │             └── Checker
+    │
+    └── Room
+           │
+           └── RoomRequirement
+                    │
+                    └── ExtinguisherType
+                           │
+                           └── Extinguisher
 ```
 
 ---
@@ -443,13 +509,15 @@ ExtinguisherType
 
 В текущия модел са реализирани следните важни ограничения:
 
-| Entity             | Ограничение                            |
-| ------------------ | -------------------------------------- |
-| Employee           | уникален `WorkNumber`                  |
-| Checker            | уникален `EmployeeId`                  |
-| DepartmentPosition | уникален `DepartmentId + PositionId`   |
-| RoomRequirement    | уникален `RoomId + ExtinguisherTypeId` |
-| RoomRequirement    | `RequiredCount` между 1 и 30           |
+| Entity          | Ограничение                            |
+| --------------- | -------------------------------------- |
+| Employee        | уникален `WorkNumber`                  |
+| Position        | уникален `DepartmentId + Name`         |
+| Checker         | уникален `EmployeeId`                  |
+| RoomRequirement | уникален `RoomId + ExtinguisherTypeId` |
+| RoomRequirement | `RequiredCount` между 1 и 30           |
+
+Няма глобален unique index върху `Position.Name`, тъй като една и съща длъжност може да съществува в различни звена.
 
 ---
 
@@ -465,6 +533,18 @@ DeleteBehavior.Restrict
 
 Това е особено важно при използването на Soft Delete.
 
+Основните зависимости са:
+
+```text
+Department → Position
+Position → Employee
+Department → Room
+Employee → Checker
+Room → RoomRequirement
+ExtinguisherType → RoomRequirement
+ExtinguisherType → Extinguisher
+```
+
 ---
 
 # Global Query Filter
@@ -475,9 +555,13 @@ Entity-тата, наследяващи `SoftDeletableEntity`, използва�
 IsDeleted == false
 ```
 
-Следователно стандартните заявки работят само с незаличените записи.
+Следователно стандартните заявки работят само с активните спрямо Soft Delete записи.
 
-Изтритите записи могат да бъдат достъпени чрез специализирани repository операции, използващи `IgnoreQueryFilters()`.
+Изтритите записи могат да бъдат достъпени чрез специализирани repository операции, използващи:
+
+```text
+IgnoreQueryFilters()
+```
 
 ---
 
@@ -502,7 +586,6 @@ ApplyConfigurationsFromAssembly()
 ```text
 DepartmentConfiguration
 PositionConfiguration
-DepartmentPositionConfiguration
 EmployeeConfiguration
 CheckerConfiguration
 RoomConfiguration
@@ -543,11 +626,14 @@ Undelete
 
 За entity-та със специфична бизнес логика могат да се използват entity-specific services.
 
-Пример:
+Примери:
 
 ```text
 IDepartmentService
 DepartmentService
+
+IEmployeeService
+EmployeeService
 ```
 
 Този подход позволява общата CRUD логика да не се дублира между отделните модули.
@@ -564,8 +650,9 @@ DepartmentService
 * промяна на колони
 * добавяне на индекси
 * добавяне на ограничения
-* промяна на връзки
-* преименуване на таблици и индекси
+* промяна на foreign keys
+* промяна на relationships
+* промяна на database constraints
 
 Базата данни използва PostgreSQL чрез Npgsql.
 
@@ -593,7 +680,15 @@ DepartmentService
 
 # Текущ статус
 
-Към версия 2.2 са реализирани основните entity модели и техните EF Core конфигурации.
+Към 01.09.2026 основният организационен модел е:
+
+```text
+Department
+   ↓
+Position
+   ↓
+Employee
+```
 
 Реализирани са:
 
@@ -609,6 +704,8 @@ DepartmentService
 * foreign keys
 * unique indexes
 * database check constraint за `RequiredCount`
+* директна връзка `Department → Position`
+* директна връзка `Position → Employee`
 * `Department` CRUD
 * `DepartmentService`
 * `IDepartmentService`
@@ -618,6 +715,6 @@ DepartmentService
 * `Delete`
 * `Undelete`
 
-За `Employee` е дефиниран модел със задължителни зависимости към `Department` и `Position`.
+Междинният модел между звена и длъжности не е част от текущата база данни.
 
-Следващите бизнес модули ще се изграждат върху тази основа.
+Следващият функционален етап е изграждането на **Position CRUD в контекста на конкретно звено**.
