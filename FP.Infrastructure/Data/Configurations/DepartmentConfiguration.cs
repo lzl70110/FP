@@ -22,3 +22,4 @@ public class DepartmentConfiguration
             .HasMaxLength(1000);
     }
 }
+ 

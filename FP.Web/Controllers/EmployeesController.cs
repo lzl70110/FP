@@ -1,5 +1,4 @@
-﻿ 
-using FP.Application.Common;
+﻿using FP.Application.Common;
 using FP.Application.Contracts.Services;
 using FP.Domain.Entities.Employees;
 using FP.Web.Extensions;
@@ -90,11 +89,6 @@ public class EmployeesController : Controller
                 },
                 new CrudProperty
                 {
-                    Name = nameof(Employee.DepartmentId),
-                    Value = employee.DepartmentId
-                },
-                new CrudProperty
-                {
                     Name = nameof(Employee.PositionId),
                     Value = employee.PositionId
                 },
@@ -117,7 +111,8 @@ public class EmployeesController : Controller
                 {
                     Type = CrudResultType.Success,
                     Title = "Успешно",
-                    Message = $"Служителят „{result.FirstName} {result.LastName}“ беше създаден успешно."
+                    Message =
+                        $"Служителят „{result.FirstName} {result.LastName}“ беше създаден успешно."
                 });
         }
 
@@ -172,11 +167,6 @@ public class EmployeesController : Controller
                 },
                 new CrudProperty
                 {
-                    Name = nameof(Employee.DepartmentId),
-                    Value = employee.DepartmentId
-                },
-                new CrudProperty
-                {
                     Name = nameof(Employee.PositionId),
                     Value = employee.PositionId
                 },
@@ -199,7 +189,8 @@ public class EmployeesController : Controller
                 {
                     Type = CrudResultType.Success,
                     Title = "Успешно",
-                    Message = $"Служителят „{result.FirstName} {result.LastName}“ беше променен успешно."
+                    Message =
+                        $"Служителят „{result.FirstName} {result.LastName}“ беше променен успешно."
                 });
         }
         else
@@ -209,7 +200,8 @@ public class EmployeesController : Controller
                 {
                     Type = CrudResultType.Warning,
                     Title = "Внимание",
-                    Message = "Служителят не беше намерен и не беше променен."
+                    Message =
+                        "Служителят не беше намерен и не беше променен."
                 });
         }
 
@@ -231,7 +223,8 @@ public class EmployeesController : Controller
                 {
                     Type = CrudResultType.Success,
                     Title = "Успешно",
-                    Message = $"Служителят „{result.FirstName} {result.LastName}“ беше изтрит успешно."
+                    Message =
+                        $"Служителят „{result.FirstName} {result.LastName}“ беше изтрит успешно."
                 });
         }
         else
@@ -241,7 +234,8 @@ public class EmployeesController : Controller
                 {
                     Type = CrudResultType.Warning,
                     Title = "Внимание",
-                    Message = "Служителят не беше намерен и не беше изтрит."
+                    Message =
+                        "Служителят не беше намерен и не беше изтрит."
                 });
         }
 
@@ -263,7 +257,8 @@ public class EmployeesController : Controller
                 {
                     Type = CrudResultType.Success,
                     Title = "Успешно",
-                    Message = $"Служителят „{result.FirstName} {result.LastName}“ беше възстановен успешно."
+                    Message =
+                        $"Служителят „{result.FirstName} {result.LastName}“ беше възстановен успешно."
                 });
         }
         else
@@ -273,11 +268,11 @@ public class EmployeesController : Controller
                 {
                     Type = CrudResultType.Warning,
                     Title = "Внимание",
-                    Message = "Служителят не беше намерен и не беше възстановен."
+                    Message =
+                        "Служителят не беше намерен и не беше възстановен."
                 });
         }
 
         return RedirectToAction(nameof(Deleted));
     }
 }
- 

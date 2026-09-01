@@ -1,5 +1,4 @@
-﻿ 
-using FP.Application.Contracts.Repositories;
+﻿using FP.Application.Contracts.Repositories;
 using FP.Application.Contracts.Services;
 using FP.Domain.Entities.Departments;
 using FP.Infrastructure.Data;
@@ -32,9 +31,8 @@ public class DepartmentService(
     public async Task<Department?> GetDetailsAsync(int id)
     {
         return await context.Departments
-            .Include(d => d.DepartmentPositions)
-                .ThenInclude(dp => dp.Position)
+            .Include(d => d.Positions)
+            .Include(d => d.Rooms)
             .FirstOrDefaultAsync(d => d.Id == id);
     }
 }
- 

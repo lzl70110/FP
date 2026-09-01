@@ -37,12 +37,6 @@ public class EmployeeConfiguration
             .HasMaxLength(1000);
 
         builder
-            .HasOne(e => e.Department)
-            .WithMany()
-            .HasForeignKey(e => e.DepartmentId)
-            .OnDelete(DeleteBehavior.Restrict);
-
-        builder
             .HasOne(e => e.Position)
             .WithMany(p => p.Employees)
             .HasForeignKey(e => e.PositionId)

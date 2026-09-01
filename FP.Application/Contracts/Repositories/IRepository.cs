@@ -12,6 +12,9 @@ public interface IRepository<TEntity>
 
     Task<List<TEntity>> GetDeletedAsync();
 
+    Task<List<TEntity>> WhereAsync(
+        Expression<Func<TEntity, bool>> predicate);
+
     Task<TEntity?> FirstOrDefaultAsync(
         Expression<Func<TEntity, bool>> predicate);
 

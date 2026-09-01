@@ -1,5 +1,4 @@
-﻿ 
-using FP.Application.Contracts.Repositories;
+﻿using FP.Application.Contracts.Repositories;
 using FP.Domain.Common;
 using FP.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -37,6 +36,14 @@ public class Repository<TEntity> : IRepository<TEntity>
             .ToListAsync();
     }
 
+    public async Task<List<TEntity>> WhereAsync(
+        Expression<Func<TEntity, bool>> predicate)
+    {
+        return await context.Set<TEntity>()
+            .Where(predicate)
+            .ToListAsync();
+    }
+
     public async Task<TEntity?> FirstOrDefaultAsync(
         Expression<Func<TEntity, bool>> predicate)
     {
@@ -58,7 +65,7 @@ public class Repository<TEntity> : IRepository<TEntity>
 
     public void Delete(TEntity entity)
     {
-        // Самата audit информация се задава централизирано в AppDbContext.
+        // Audit information is handled centrally in AppDbContext.
         entity.IsDeleted = true;
 
         context.Set<TEntity>()
@@ -77,4 +84,3 @@ public class Repository<TEntity> : IRepository<TEntity>
             .FirstOrDefaultAsync(x => x.Id == id && x.IsDeleted);
     }
 }
- 

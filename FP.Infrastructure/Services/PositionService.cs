@@ -1,5 +1,4 @@
-﻿ 
-using FP.Application.Contracts.Repositories;
+﻿using FP.Application.Contracts.Repositories;
 using FP.Application.Contracts.Services;
 using FP.Domain.Entities.Positions;
 
@@ -19,6 +18,13 @@ public class PositionService : IPositionService
         return await repository.GetAllAsync();
     }
 
+    public async Task<List<Position>> GetByDepartmentAsync(
+        int departmentId)
+    {
+        return await repository.WhereAsync(
+            p => p.DepartmentId == departmentId);
+    }
+
     public async Task<List<Position>> GetDeletedAsync()
     {
         return await repository.GetDeletedAsync();
@@ -29,4 +35,3 @@ public class PositionService : IPositionService
         return await repository.GetByIdAsync(id);
     }
 }
- 

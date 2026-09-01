@@ -1,7 +1,5 @@
-﻿ 
-using FP.Domain.Common;
+﻿using FP.Domain.Common;
 using FP.Domain.Entities.Checkers;
-using FP.Domain.Entities.DepartmentPositions;
 using FP.Domain.Entities.Departments;
 using FP.Domain.Entities.Employees;
 using FP.Domain.Entities.Extinguishers;
@@ -13,7 +11,7 @@ namespace FP.Infrastructure.Data;
 
 public class AppDbContext : DbContext
 {
-    // Временно използваме System, докато въведем Identity.
+    // Temporary system user until Identity is introduced.
     private const string SystemUser = "System";
 
     public AppDbContext(
@@ -28,7 +26,6 @@ public class AppDbContext : DbContext
     public DbSet<Checker> Checkers { get; set; } = null!;
     public DbSet<Extinguisher> Extinguishers { get; set; } = null!;
     public DbSet<ExtinguisherType> ExtinguisherTypes { get; set; } = null!;
-    public DbSet<DepartmentPosition> DepartmentPositions { get; set; } = null!;
 
     public override async Task<int> SaveChangesAsync(
         CancellationToken cancellationToken = default)
@@ -42,14 +39,14 @@ public class AppDbContext : DbContext
             {
                 case EntityState.Added:
 
-                    // При създаване записваме дата и системен потребител.
+                    // Set creation audit information.
                     entry.Entity.CreatedAt = DateTime.UtcNow;
                     entry.Entity.CreatedById = SystemUser;
                     break;
 
                 case EntityState.Modified:
 
-                    // Soft delete се обработва отделно от обикновената промяна.
+                    // Handle soft delete separately from regular updates.
                     if (entry.Entity.IsDeleted)
                     {
                         entry.Entity.DeletedAt = DateTime.UtcNow;
@@ -57,7 +54,7 @@ public class AppDbContext : DbContext
                     }
                     else
                     {
-                        // При промяна записваме дата и системен потребител.
+                        // Set update audit information.
                         entry.Entity.UpdatedAt = DateTime.UtcNow;
                         entry.Entity.UpdatedById = SystemUser;
                     }
@@ -73,7 +70,7 @@ public class AppDbContext : DbContext
     {
         base.OnModelCreating(builder);
 
-        // Зареждаме всички Fluent API конфигурации от Infrastructure.
+        // Load all Fluent API configurations from Infrastructure.
         builder.ApplyConfigurationsFromAssembly(
             typeof(AppDbContext).Assembly);
 
@@ -96,10 +93,9 @@ public class AppDbContext : DbContext
                         Expression.Constant(false)),
                     parameter);
 
-                // Скриваме soft-deleted записите от стандартните заявки.
+                // Hide soft-deleted records from standard queries.
                 entityType.SetQueryFilter(filter);
             }
         }
     }
 }
- 

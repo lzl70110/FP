@@ -26,16 +26,11 @@ builder.Services.AddScoped(
 
 builder.Services.AddScoped<IDepartmentService, DepartmentService>();
 
-builder.Services.AddScoped<
-    IDepartmentPositionService,
-    DepartmentPositionService>();
-
 builder.Services.AddScoped<IPositionService, PositionService>();
 
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 
 builder.Services.AddSingleton<DateTimeService>();
-builder.Services.AddScoped<IDepartmentPositionRepository, DepartmentPositionRepository>();
 
 var app = builder.Build();
 

@@ -10,19 +10,15 @@ namespace FP.Web.Controllers;
 
 public class PositionsController(
     IPositionService service,
-    IDepartmentPositionService departmentPositionService,
     ICrudService<Position> crudService) : Controller
 {
     private readonly IPositionService service = service;
-    private readonly IDepartmentPositionService departmentPositionService =
-        departmentPositionService;
     private readonly ICrudService<Position> crudService = crudService;
 
     public async Task<IActionResult> Index(int departmentId)
     {
-        var positions =
-            await departmentPositionService.GetByDepartmentAsync(
-                departmentId);
+        var positions = await service.GetByDepartmentAsync(
+            departmentId);
 
         ViewData["DepartmentId"] = departmentId;
 
@@ -37,7 +33,8 @@ public class PositionsController(
             CrudCommand.Read,
             id);
 
-        if (position == null)
+        if (position == null ||
+            position.DepartmentId != departmentId)
         {
             return NotFound();
         }
@@ -93,22 +90,23 @@ public class PositionsController(
                 {
                     Name = nameof(Position.IsActive),
                     Value = model.IsActive
+                },
+                new CrudProperty
+                {
+                    Name = nameof(Position.DepartmentId),
+                    Value = departmentId
                 }
             ]);
 
         if (result != null)
         {
-            await departmentPositionService.AddAsync(
-                departmentId,
-                result.Id);
-
             TempData.SetCrudResult(
                 new CrudResultViewModel
                 {
                     Type = CrudResultType.Success,
                     Title = "Успешно",
                     Message =
-                        $"Длъжността „{result.Name}“ беше създадена и добавена към звеното."
+                        $"Длъжността „{result.Name}“ беше създадена успешно."
                 });
         }
 
@@ -124,7 +122,8 @@ public class PositionsController(
     {
         var position = await service.GetByIdAsync(id);
 
-        if (position == null)
+        if (position == null ||
+            position.DepartmentId != departmentId)
         {
             return NotFound();
         }
@@ -155,6 +154,14 @@ public class PositionsController(
             ViewData["DepartmentId"] = departmentId;
 
             return View(model);
+        }
+
+        var position = await service.GetByIdAsync(id);
+
+        if (position == null ||
+            position.DepartmentId != departmentId)
+        {
+            return NotFound();
         }
 
         var result = await crudService.ExecuteAsync(
@@ -209,25 +216,13 @@ public class PositionsController(
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Delete(
-        int departmentId,
-        int positionId)
+        int id,
+        int departmentId)
     {
-        var removed = await departmentPositionService.RemoveAsync(
-            departmentId,
-            positionId);
+        var position = await service.GetByIdAsync(id);
 
-        if (removed)
-        {
-            TempData.SetCrudResult(
-                new CrudResultViewModel
-                {
-                    Type = CrudResultType.Success,
-                    Title = "Успешно",
-                    Message =
-                        "Длъжността беше премахната от звеното."
-                });
-        }
-        else
+        if (position == null ||
+            position.DepartmentId != departmentId)
         {
             TempData.SetCrudResult(
                 new CrudResultViewModel
@@ -235,7 +230,27 @@ public class PositionsController(
                     Type = CrudResultType.Warning,
                     Title = "Внимание",
                     Message =
-                        "Длъжността не беше намерена в звеното."
+                        "Длъжността не беше намерена и не беше изтрита."
+                });
+
+            return RedirectToAction(
+                nameof(Index),
+                new { departmentId });
+        }
+
+        var result = await crudService.ExecuteAsync(
+            CrudCommand.Delete,
+            id);
+
+        if (result != null)
+        {
+            TempData.SetCrudResult(
+                new CrudResultViewModel
+                {
+                    Type = CrudResultType.Success,
+                    Title = "Успешно",
+                    Message =
+                        $"Длъжността „{result.Name}“ беше изтрита успешно."
                 });
         }
 
@@ -278,4 +293,3 @@ public class PositionsController(
         return RedirectToAction(nameof(Deleted));
     }
 }
-
