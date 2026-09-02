@@ -1,0 +1,39 @@
+﻿@model FP.Web.Models.Forms.NamedActiveEntityViewModel
+
+@{
+    ViewData["Title"] = "Редактиране на длъжност";
+    var departmentId = (int)ViewData["DepartmentId"]!;
+    var id = (int)ViewData["Id"]!;
+}
+
+<h1>Редактиране на длъжност</h1>
+
+<form asp-action="Edit" method="post">
+
+    <input type="hidden"
+           name="id"
+           value="@id" />
+
+    <input type="hidden"
+           name="departmentId"
+           value="@departmentId" />
+
+    @Html.EditorForModel()
+
+    <button type="submit" class="btn btn-primary">
+        Запиши
+    </button>
+
+    <a asp-action="Index"
+       asp-route-departmentId="@departmentId"
+       class="btn btn-secondary">
+        Назад
+    </a>
+
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
