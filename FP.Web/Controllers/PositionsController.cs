@@ -10,17 +10,28 @@ namespace FP.Web.Controllers;
 
 public class PositionsController(
     IPositionService service,
-    ICrudService<Position> crudService) : Controller
+    ICrudService<Position> crudService,
+    IDepartmentService departmentService) : Controller
 {
     private readonly IPositionService service = service;
     private readonly ICrudService<Position> crudService = crudService;
+    private readonly IDepartmentService departmentService = departmentService;
 
     public async Task<IActionResult> Index(int departmentId)
     {
         var positions = await service.GetByDepartmentAsync(
             departmentId);
 
+        var department = await departmentService.GetByIdAsync(
+            departmentId);
+
+        if (department == null)
+        {
+            return NotFound();
+        }
+
         ViewData["DepartmentId"] = departmentId;
+        ViewData["DepartmentName"] = department.Name;
 
         return View(positions);
     }
@@ -67,6 +78,21 @@ public class PositionsController(
     {
         if (!ModelState.IsValid)
         {
+            ViewData["DepartmentId"] = departmentId;
+
+            return View(model);
+        }
+
+        var existingPosition = await service.GetByNameAsync(
+            departmentId,
+            model.Name);
+
+        if (existingPosition != null)
+        {
+            ModelState.AddModelError(
+                nameof(model.Name),
+                "В този отдел вече съществува длъжност с това име.");
+
             ViewData["DepartmentId"] = departmentId;
 
             return View(model);

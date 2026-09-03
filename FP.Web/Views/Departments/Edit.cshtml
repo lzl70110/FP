@@ -2,7 +2,7 @@
 @model FP.Domain.Entities.Departments.Department
 
 @{
-    ViewData["Title"] = "Редактиране на отдел";
+    ViewData["Title"] = "Редактиране на звено";
 }
 
 <h1>Редактиране на отдел</h1>
@@ -19,7 +19,7 @@
 
     <div class="mb-3 col-md-3">
         <label asp-for="Notes" class="form-label"></label>
-        <textarea asp-for="Notes" class="form-control" rows="3"></textarea>
+        <textarea asp-for="Notes" class="form-control" rows="1"></textarea>
         <span asp-validation-for="Notes" class="text-danger"></span>
     </div>
 

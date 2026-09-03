@@ -83,4 +83,13 @@ public class Repository<TEntity> : IRepository<TEntity>
             .IgnoreQueryFilters()
             .FirstOrDefaultAsync(x => x.Id == id && x.IsDeleted);
     }
+
+    public async Task<TEntity?> FirstDeletedOrDefaultAsync(
+    Expression<Func<TEntity, bool>> predicate)
+    {
+        return await context.Set<TEntity>()
+            .IgnoreQueryFilters()
+            .Where(x => x.IsDeleted)
+            .FirstOrDefaultAsync(predicate);
+    }
 }

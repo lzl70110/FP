@@ -1,11 +1,10 @@
-﻿
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="bg">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>@ViewData["Title"] - Дневник на пожарогасителите</title>
+    <title>@ViewData["Title"] - FP</title>
 
     <link rel="stylesheet"
           href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
@@ -24,27 +23,32 @@
     <!-- Header -->
     <header>
         <nav class="navbar navbar-light bg-white border-bottom box-shadow">
-            <div class="container-fluid">
+            <div class="container-fluid px-3">
 
                 <a class="navbar-brand fw-bold"
                    asp-area=""
                    asp-controller="Home"
                    asp-action="Index">
-                    🧯 Пожарогасители
+                    ◎ FP
                 </a>
 
-                <div class="text-center">
-                    <div class="fs-5">
-                        📆 Днес @DateTime.Now.ToString("dd.MM.yyyy")
-                        <i>@DateTime.Now.ToString("dddd")</i>
-                    </div>
+                <div class="position-absolute start-50 translate-middle-x">
+                    <span class="fs-4">
+                        @(User.Identity?.IsAuthenticated == true
+                                                ? User.Identity.Name
+                                                : "Гост")
+                    </span>
                 </div>
 
-                <span class="fs-4">
-                    @(User.Identity?.IsAuthenticated == true
-                                        ? User.Identity.Name
-                                        : "Гост")
-                </span>
+                <div class="ms-auto text-end me-2">
+                    <div class="fs-5">
+                        📆 @DateTime.Now.ToString("dd.MM.yyyy")
+                        · <i>@DateTime.Now.ToString("dddd")</i>
+                        · <span id="live-clock">
+                            @DateTime.Now.ToString("HH:mm:ss")
+                        </span>
+                    </div>
+                </div>
 
             </div>
         </nav>
@@ -72,8 +76,11 @@
 
         </div>
     </div>
+
+
     <!-- CRUD result modal -->
     <partial name="_CrudResultModal" />
+
 
     <!-- Footer -->
     <footer class="border-top footer text-muted mt-auto">

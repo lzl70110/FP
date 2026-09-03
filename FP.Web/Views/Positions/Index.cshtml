@@ -3,9 +3,11 @@
 @{
     ViewData["Title"] = "Длъжности";
     var departmentId = (int)ViewData["DepartmentId"]!;
+    var departmentName = (string)ViewData["DepartmentName"]!;
 }
 
-<h1>Длъжности</h1>
+<h1>@departmentName</h1>
+<h2>Длъжности</h2>
 
 <div class="mb-3">
     <a asp-action="Create"
@@ -15,13 +17,13 @@
         Създай длъжност
     </a>
 
-    
+
     <a asp-action="Deleted"
        class="btn btn-secondary">
         <i class="bi bi-trash"></i>
         Изтрити длъжности
     </a>
-    
+
 
 </div>
 
@@ -35,7 +37,7 @@
         </tr>
     </thead>
 
-    
+
     <tbody>
         @foreach (var position in Model)
         {
@@ -79,6 +81,6 @@
             </tr>
         }
     </tbody>
-    
+
 
 </table>

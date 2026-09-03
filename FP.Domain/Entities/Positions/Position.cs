@@ -22,7 +22,9 @@ public class Position : SoftDeletableEntity
         ErrorMessage = "Забележката не може да надвишава 1000 символа.")]
     public string? Notes { get; set; }
 
+    [Display(Name = "Активна")]
     public bool IsActive { get; set; } = true;
+ 
 
     public int DepartmentId { get; set; }
 

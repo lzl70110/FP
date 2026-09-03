@@ -34,4 +34,25 @@ public class PositionService : IPositionService
     {
         return await repository.GetByIdAsync(id);
     }
+    public async Task<Position?> GetByNameAsync(
+    int departmentId,
+    string name)
+    {
+        var positions = await repository.WhereAsync(
+            p => p.DepartmentId == departmentId &&
+                 p.Name == name);
+
+        return positions.FirstOrDefault();
+    }
+
+    public async Task<Position?> GetDeletedByNameAsync(
+        int departmentId,
+        string name)
+    {
+        var deletedPositions = await repository.GetDeletedAsync();
+
+        return deletedPositions.FirstOrDefault(
+            p => p.DepartmentId == departmentId &&
+                 p.Name == name);
+    }
 }
