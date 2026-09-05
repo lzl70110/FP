@@ -32,7 +32,9 @@ WORKDIR /app
 COPY --from=build /app/publish .
 
 # Render provides the PORT environment variable.
-ENV ASPNETCORE_URLS=http://+:${PORT}
+ENV ASPNETCORE_HTTP_PORTS=10000
+
+EXPOSE 10000
 
 ENTRYPOINT ["dotnet", "FP.Web.dll"]
  
