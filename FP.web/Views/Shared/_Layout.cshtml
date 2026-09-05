@@ -1,9 +1,25 @@
-﻿<!DOCTYPE html>
+﻿@using System.Globalization
+@using FP.Infrastructure.Services
+@inject DateTimeService DateTimeService
+
+@{
+    ViewData["Title"] ??= "FP";
+
+ 
+var localNow = DateTimeService.UtcToLocal(DateTime.UtcNow);
+    var bgCulture = CultureInfo.GetCultureInfo("bg-BG");
+ 
+
+}
+
+<!DOCTYPE html>
+
 <html lang="bg">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+ 
     <title>@ViewData["Title"] - FP</title>
 
     <link rel="stylesheet"
@@ -16,10 +32,13 @@
     <link rel="stylesheet"
           href="~/FP.web.styles.css"
           asp-append-version="true" />
+ 
+
 </head>
 
 <body>
 
+ 
     <!-- Header -->
     <header>
         <nav class="navbar navbar-light bg-white border-bottom box-shadow">
@@ -42,10 +61,11 @@
 
                 <div class="ms-auto text-end me-2">
                     <div class="fs-5">
-                        📆 @DateTime.Now.ToString("dd.MM.yyyy")
-                        · <i>@DateTime.Now.ToString("dddd")</i>
-                        · <span id="live-clock">
-                            @DateTime.Now.ToString("HH:mm:ss")
+                        📆 @localNow.ToString("dd.MM.yyyy")
+                        · <i>@localNow.ToString("dddd", bgCulture)</i>
+                        · <span id="live-clock"
+                                data-timezone="Europe/Sofia">
+                            @localNow.ToString("HH:mm:ss")
                         </span>
                     </div>
                 </div>
@@ -85,7 +105,7 @@
     <!-- Footer -->
     <footer class="border-top footer text-muted mt-auto">
         <div class="container py-3">
-            © @DateTime.Now.Year · Дизайн и разработка: Любомир Чекански
+            © @localNow.Year · Дизайн и разработка: Любомир Чекански
         </div>
     </footer>
 
@@ -98,7 +118,7 @@
             asp-append-version="true"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
+   
 
 </body>
 </html>
- 
