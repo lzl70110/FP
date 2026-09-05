@@ -24,7 +24,8 @@ public class PositionConfiguration
 
         builder
             .HasIndex(p => new { p.DepartmentId, p.Name })
-            .IsUnique();
+            .IsUnique()
+            .HasFilter("\"IsDeleted\" = false");
 
         builder
             .HasOne(p => p.Department)
@@ -33,4 +34,3 @@ public class PositionConfiguration
             .OnDelete(DeleteBehavior.Restrict);
     }
 }
- 

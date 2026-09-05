@@ -8,9 +8,12 @@
 
 <form asp-action="Create" method="post">
 
+  
     <input type="hidden"
            name="departmentId"
            value="@ViewData["DepartmentId"]" />
+
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
     @Html.EditorForModel()
 
@@ -23,6 +26,7 @@
        class="btn btn-secondary">
         Назад
     </a>
+    
 
 </form>
 

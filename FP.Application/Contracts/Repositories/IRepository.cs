@@ -18,6 +18,9 @@ public interface IRepository<TEntity>
     Task<TEntity?> FirstOrDefaultAsync(
         Expression<Func<TEntity, bool>> predicate);
 
+    Task<TEntity?> FirstDeletedOrDefaultAsync(
+        Expression<Func<TEntity, bool>> predicate);
+
     Task AddAsync(TEntity entity);
 
     void Update(TEntity entity);

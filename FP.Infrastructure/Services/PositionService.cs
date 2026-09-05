@@ -1,4 +1,5 @@
-﻿using FP.Application.Contracts.Repositories;
+﻿ 
+using FP.Application.Contracts.Repositories;
 using FP.Application.Contracts.Services;
 using FP.Domain.Entities.Positions;
 
@@ -27,32 +28,42 @@ public class PositionService : IPositionService
 
     public async Task<List<Position>> GetDeletedAsync()
     {
-        return await repository.GetDeletedAsync();
+        var deletedPositions = await repository.GetDeletedAsync();
+        var activePositions = await repository.GetAllAsync();
+
+        return deletedPositions
+            .Where(deleted => !activePositions.Any(active =>
+                active.DepartmentId == deleted.DepartmentId &&
+                active.Name == deleted.Name))
+            .ToList();
     }
 
     public async Task<Position?> GetByIdAsync(int id)
     {
         return await repository.GetByIdAsync(id);
     }
-    public async Task<Position?> GetByNameAsync(
-    int departmentId,
-    string name)
+
+    public async Task<Position?> GetDeletedByIdAsync(int id)
     {
-        var positions = await repository.WhereAsync(
+        return await repository.GetDeletedByIdAsync(id);
+    }
+
+    public async Task<Position?> GetByNameAsync(
+        int departmentId,
+        string name)
+    {
+        return await repository.FirstOrDefaultAsync(
             p => p.DepartmentId == departmentId &&
                  p.Name == name);
-
-        return positions.FirstOrDefault();
     }
 
     public async Task<Position?> GetDeletedByNameAsync(
         int departmentId,
         string name)
     {
-        var deletedPositions = await repository.GetDeletedAsync();
-
-        return deletedPositions.FirstOrDefault(
+        return await repository.FirstDeletedOrDefaultAsync(
             p => p.DepartmentId == departmentId &&
                  p.Name == name);
     }
 }
+ 

@@ -12,12 +12,14 @@ public interface IPositionService
     Task<List<Position>> GetDeletedAsync();
 
     Task<Position?> GetByIdAsync(int id);
+
+    Task<Position?> GetDeletedByIdAsync(int id);
+
     Task<Position?> GetDeletedByNameAsync(
-    int departmentId,
-    string name);
+        int departmentId,
+        string name);
 
     Task<Position?> GetByNameAsync(
-    int departmentId,
-    string name);
-
+        int departmentId,
+        string name);
 }

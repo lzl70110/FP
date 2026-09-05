@@ -9,7 +9,7 @@
 <h1>Редактиране на длъжност</h1>
 
 <form asp-action="Edit" method="post">
-
+ 
     <input type="hidden"
            name="id"
            value="@id" />
@@ -17,6 +17,8 @@
     <input type="hidden"
            name="departmentId"
            value="@departmentId" />
+
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
     @Html.EditorForModel()
 
@@ -29,6 +31,7 @@
        class="btn btn-secondary">
         Назад
     </a>
+ 
 
 </form>
 

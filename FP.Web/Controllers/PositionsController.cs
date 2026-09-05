@@ -55,9 +55,22 @@ public class PositionsController(
         return View(position);
     }
 
-    public async Task<IActionResult> Deleted()
+    public async Task<IActionResult> Deleted(int departmentId)
     {
-        var positions = await service.GetDeletedAsync();
+        var department = await departmentService.GetByIdAsync(
+            departmentId);
+
+        if (department == null)
+        {
+            return NotFound();
+        }
+
+        var positions = (await service.GetDeletedAsync())
+            .Where(p => p.DepartmentId == departmentId)
+            .ToList();
+
+        ViewData["DepartmentId"] = departmentId;
+        ViewData["DepartmentName"] = department.Name;
 
         return View(positions);
     }
@@ -190,6 +203,23 @@ public class PositionsController(
             return NotFound();
         }
 
+        var existingPosition = await service.GetByNameAsync(
+            departmentId,
+            model.Name);
+
+        if (existingPosition != null &&
+            existingPosition.Id != id)
+        {
+            ModelState.AddModelError(
+                nameof(model.Name),
+                "В този отдел вече съществува длъжност с това име.");
+
+            ViewData["Id"] = id;
+            ViewData["DepartmentId"] = departmentId;
+
+            return View(model);
+        }
+
         var result = await crudService.ExecuteAsync(
             CrudCommand.Update,
             id,
@@ -287,8 +317,50 @@ public class PositionsController(
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Undelete(int id)
+    public async Task<IActionResult> Undelete(
+        int id,
+        int departmentId)
     {
+        var deletedPosition = await service.GetDeletedByIdAsync(id);
+
+        if (deletedPosition == null ||
+            deletedPosition.DepartmentId != departmentId)
+        {
+            TempData.SetCrudResult(
+                new CrudResultViewModel
+                {
+                    Type = CrudResultType.Warning,
+                    Title = "Внимание",
+                    Message =
+                        "Длъжността не беше намерена и не беше възстановена."
+                });
+
+            return RedirectToAction(
+                nameof(Deleted),
+                new { departmentId });
+        }
+
+        var existingPosition = await service.GetByNameAsync(
+            deletedPosition.DepartmentId,
+            deletedPosition.Name);
+
+        if (existingPosition != null)
+        {
+            TempData.SetCrudResult(
+                new CrudResultViewModel
+                {
+                    Type = CrudResultType.Warning,
+                    Title = "Внимание",
+                    Message =
+                        $"Длъжността „{deletedPosition.Name}“ " +
+                        "вече съществува в това звено и не може да бъде възстановена."
+                });
+
+            return RedirectToAction(
+                nameof(Deleted),
+                new { departmentId });
+        }
+
         var result = await crudService.ExecuteAsync(
             CrudCommand.Undelete,
             id);
@@ -316,6 +388,9 @@ public class PositionsController(
                 });
         }
 
-        return RedirectToAction(nameof(Deleted));
+        return RedirectToAction(
+            nameof(Deleted),
+            new { departmentId });
     }
 }
+
