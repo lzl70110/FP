@@ -1,0 +1,77 @@
+﻿@model FP.Web.Models.DeleteConfirmViewModel
+
+<div class="modal fade"
+     id="@Model.ModalId"
+     tabindex="-1"
+     aria-labelledby="@Model.ModalIdLabel"
+     aria-hidden="true">
+
+    <div class="modal-dialog">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <h5 class="modal-title fw-semibold"
+                    id="@Model.ModalIdLabel">
+
+                    <svg bootstrap-icon="ExclamationTriangleFill"
+                         width="20"
+                         height="20"
+                         class="text-danger me-2"
+                         aria-hidden="true"></svg>
+
+                    Потвърждение
+                </h5>
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Затвори"></button>
+
+            </div>
+
+            <div class="modal-body py-4">
+
+                <p class="mb-0 fs-5 fw-bold text-danger">
+                    @Model.Message
+                </p>
+
+            </div>
+
+            <div class="modal-footer">
+
+                <button type="button"
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal">
+                    Отказ
+                </button>
+
+                <form asp-controller="@Model.Controller"
+                      asp-action="@Model.Action"
+                      asp-route-id="@Model.Id"
+                      method="post"
+                      class="d-inline">
+
+                    @Html.AntiForgeryToken()
+
+                    <button type="submit"
+                            class="btn btn-danger">
+
+                        <svg bootstrap-icon="Trash"
+                             width="16"
+                             height="16"
+                             aria-hidden="true"></svg>
+
+                        Да, изтрий
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

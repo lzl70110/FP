@@ -4,6 +4,9 @@ using FP.Infrastructure.Data;
 using FP.Infrastructure.Repositories;
 using FP.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
+using FP.Application.Contracts.Identity;
+using FP.Domain.Entities.Positions;
+using FP.Infrastructure.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,6 +30,8 @@ builder.Services.AddScoped(
 builder.Services.AddScoped<IDepartmentService, DepartmentService>();
 
 builder.Services.AddScoped<IPositionService, PositionService>();
+
+builder.Services.AddScoped<IEntityIdentity<Position>, PositionIdentity>();
 
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 

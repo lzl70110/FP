@@ -1,4 +1,6 @@
-﻿using FP.Application.Common;
+﻿ 
+using FP.Application.Common;
+using FP.Application.Contracts.Identity;
 using FP.Application.Contracts.Repositories;
 using FP.Application.Contracts.Services;
 using FP.Domain.Common;
@@ -9,21 +11,25 @@ public class CrudService<TEntity> : ICrudService<TEntity>
     where TEntity : SoftDeletableEntity, new()
 {
     private readonly IRepository<TEntity> repository;
+    private readonly IEntityIdentity<TEntity>? identity;
 
     private static readonly HashSet<string> ProtectedProperties =
- [
-     nameof(AuditableEntity.CreatedAt),
-    nameof(AuditableEntity.CreatedById),
-    nameof(AuditableEntity.UpdatedAt),
-    nameof(AuditableEntity.UpdatedById),
-    nameof(SoftDeletableEntity.IsDeleted),
-    nameof(SoftDeletableEntity.DeletedAt),
-    nameof(SoftDeletableEntity.DeletedById)
- ];
+    [
+        nameof(AuditableEntity.CreatedAt),
+        nameof(AuditableEntity.CreatedById),
+        nameof(AuditableEntity.UpdatedAt),
+        nameof(AuditableEntity.UpdatedById),
+        nameof(SoftDeletableEntity.IsDeleted),
+        nameof(SoftDeletableEntity.DeletedAt),
+        nameof(SoftDeletableEntity.DeletedById)
+    ];
 
-    public CrudService(IRepository<TEntity> repository)
+    public CrudService(
+        IRepository<TEntity> repository,
+        IEnumerable<IEntityIdentity<TEntity>> identities)
     {
         this.repository = repository;
+        identity = identities.SingleOrDefault();
     }
 
     public async Task<TEntity?> ExecuteAsync(
@@ -59,11 +65,33 @@ public class CrudService<TEntity> : ICrudService<TEntity>
     }
 
     private async Task<TEntity> CreateAsync(
-        CrudProperty[] properties)
+    CrudProperty[] properties)
     {
         var entity = new TEntity();
 
         ApplyProperties(entity, properties);
+
+        if (identity != null)
+        {
+            var predicate = identity.BuildMatchPredicate(entity);
+
+            var deletedEntity =
+                await repository.FirstDeletedOrDefaultAsync(predicate);
+
+            if (deletedEntity != null)
+            {
+                ApplyProperties(deletedEntity, properties);
+
+                deletedEntity.IsDeleted = false;
+                deletedEntity.DeletedAt = null;
+                deletedEntity.DeletedById = null;
+
+                repository.Update(deletedEntity);
+                await repository.SaveChangesAsync();
+
+                return deletedEntity;
+            }
+        }
 
         await repository.AddAsync(entity);
         await repository.SaveChangesAsync();
@@ -161,3 +189,4 @@ public class CrudService<TEntity> : ICrudService<TEntity>
         }
     }
 }
+ 

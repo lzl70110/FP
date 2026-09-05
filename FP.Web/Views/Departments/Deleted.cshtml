@@ -11,6 +11,7 @@
     <h1>Изтрити отдели</h1>
 
     <a asp-action="Index" class="btn btn-secondary">
+        <i class="bi bi-arrow-left"></i>
         Назад
     </a>
 </div>
@@ -28,29 +29,48 @@ else
             <tr>
                 <th>Наименование</th>
                 <th>Бележки</th>
-                <th>Изтрит на</th>
+                <th>Изтрито на</th>
                 <th>Действия</th>
             </tr>
         </thead>
+
         <tbody>
             @foreach (var department in Model)
             {
                 <tr>
-                    <td>@department.Name</td>
-                    <td>@department.Notes</td>
+                    <td>
+                        @department.Name
+                    </td>
+
+                    <td>
+                        @department.Notes
+                    </td>
+
                     <td>
                         @(department.DeletedAt.HasValue
-                                        ? DateTimeService.UtcToLocal(department.DeletedAt.Value)
+                                        ? DateTimeService
+                                        .UtcToLocal(department.DeletedAt.Value)
                                         .ToString("dd.MM.yyyy HH:mm")
                                         : "—")
             </td>
-            <td>
-                <form asp-action="Undelete" method="post">
-                    <input type="hidden" name="id" value="@department.Id" />
 
-                            <button type="submit" class="btn btn-success btn-sm">
+                    <td>
+                        <form asp-action="Undelete"
+                              method="post"
+                              class="d-inline">
+
+                            @Html.AntiForgeryToken()
+
+                            <input type="hidden"
+                                   name="id"
+                                   value="@department.Id" />
+
+                            <button type="submit"
+                                    class="btn btn-success btn-sm">
+                                <svg bootstrap-icon="ArrowCounterclockwise" width="16" height="16" aria-hidden="true"></svg>
                                 Възстанови
                             </button>
+
                         </form>
                     </td>
                 </tr>

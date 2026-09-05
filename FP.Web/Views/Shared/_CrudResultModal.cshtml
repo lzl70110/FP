@@ -3,21 +3,6 @@
 
 @{
     var result = TempData.GetCrudResult();
-
-    var icon = "bi-info-circle-fill";
-    var alertClass = "text-info";
-
-    if (result != null)
-    {
-        (icon, alertClass) = result.Type switch
-        {
-            CrudResultType.Success => ("bi-check-circle-fill", "text-success"),
-            CrudResultType.Info => ("bi-info-circle-fill", "text-info"),
-            CrudResultType.Warning => ("bi-exclamation-triangle-fill", "text-warning"),
-            CrudResultType.Error => ("bi-x-circle-fill", "text-danger"),
-            _ => ("bi-info-circle-fill", "text-info")
-        };
-    }
 }
 
 @if (result != null)
@@ -32,13 +17,60 @@
             <div class="modal-content">
 
                 <div class="modal-header py-2">
-                    <h5 class="modal-title" id="crudResultModalLabel">
-                        <i class="bi @icon @alertClass me-2"></i>
+
+                    <h5 class="modal-title fw-semibold"
+                        id="crudResultModalLabel">
+
+                        @switch (result.Type)
+                        {
+                            case CrudResultType.Success:
+                                <svg bootstrap-icon="CheckCircleFill"
+                                     width="20"
+                                     height="20"
+                                     class="text-success me-2"
+                                     aria-hidden="true"></svg>
+                                break;
+
+                            case CrudResultType.Info:
+                                <svg bootstrap-icon="InfoCircleFill"
+                                     width="20"
+                                     height="20"
+                                     class="text-info me-2"
+                                     aria-hidden="true"></svg>
+                                break;
+
+                            case CrudResultType.Warning:
+                                <svg bootstrap-icon="ExclamationTriangleFill"
+                                     width="20"
+                                     height="20"
+                                     class="text-warning me-2"
+                                     aria-hidden="true"></svg>
+                                break;
+
+                            case CrudResultType.Error:
+                                <svg bootstrap-icon="XCircleFill"
+                                     width="20"
+                                     height="20"
+                                     class="text-danger me-2"
+                                     aria-hidden="true"></svg>
+                                break;
+
+                            default:
+                                <svg bootstrap-icon="InfoCircleFill"
+                                     width="20"
+                                     height="20"
+                                     class="text-info me-2"
+                                     aria-hidden="true"></svg>
+                                break;
+                        }
+
                         @result.Title
+
                     </h5>
+
                 </div>
 
-                <div class="modal-body py-2">
+                <div class="modal-body py-3 crud-result-body fw-bold">
                     @result.Message
                 </div>
 
@@ -48,10 +80,14 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            const modalElement = document.getElementById("crudResultModal");
+
+            const modalElement =
+                document.getElementById("crudResultModal");
 
             if (modalElement) {
-                const modal = new bootstrap.Modal(modalElement);
+
+                const modal =
+                    new bootstrap.Modal(modalElement);
 
                 modal.show();
 

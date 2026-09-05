@@ -4,6 +4,16 @@
 
 @{
     ViewData["Title"] = $"Звено: {Model.Name}";
+
+    var deleteModal = new FP.Web.Models.DeleteConfirmViewModel
+    {
+        ModalId = "deleteConfirmModal",
+        ModalIdLabel = "deleteConfirmModalLabel",
+        Message = $"Сигурни ли сте, че искате да изтриете звеното „{Model.Name}“?",
+        Controller = "Departments",
+        Action = "Delete",
+        Id = Model.Id
+    };
 }
 
 <h1>Звено: @Model.Name</h1>
@@ -43,7 +53,10 @@
             <a asp-action="Edit"
                asp-route-id="@Model.Id"
                class="btn btn-primary">
-                <i class="bi bi-gear"></i>
+                <svg bootstrap-icon="Gear"
+                     width="16"
+                     height="16"
+                     aria-hidden="true"></svg>
                 Редактиране на звеното
             </a>
 
@@ -51,7 +64,10 @@
                asp-action="Index"
                asp-route-departmentId="@Model.Id"
                class="btn btn-secondary">
-                <i class="bi bi-tools"></i>
+                <svg bootstrap-icon="Tools"
+                     width="16"
+                     height="16"
+                     aria-hidden="true"></svg>
                 Длъжности
             </a>
 
@@ -59,9 +75,33 @@
                asp-action="Index"
                asp-route-departmentId="@Model.Id"
                class="btn btn-secondary">
-                <i class="bi bi-person-badge"></i>
+                <svg bootstrap-icon="PersonBadge"
+                     width="16"
+                     height="16"
+                     aria-hidden="true"></svg>
                 Служители
             </a>
+
+        </div>
+
+        <hr />
+
+        <div class="mb-4">
+
+            <h4 class="mb-3">Опасна зона</h4>
+
+            <button type="button"
+                    class="btn btn-danger"
+                    data-bs-toggle="modal"
+                    data-bs-target="#deleteConfirmModal">
+
+                <svg bootstrap-icon="Trash"
+                     width="16"
+                     height="16"
+                     aria-hidden="true"></svg>
+
+                Изтрий звеното
+            </button>
 
         </div>
 
@@ -75,7 +115,12 @@
                     data-bs-target="#auditInfo"
                     aria-expanded="false"
                     aria-controls="auditInfo">
-                <i class="bi bi-info-circle"></i>
+
+                <svg bootstrap-icon="InfoCircle"
+                     width="16"
+                     height="16"
+                     aria-hidden="true"></svg>
+
                 Одитна информация
             </button>
 
@@ -132,9 +177,16 @@
 
         <a asp-action="Index"
            class="btn btn-outline-secondary">
-            <i class="bi bi-arrow-left"></i>
+
+            <svg bootstrap-icon="ArrowLeft"
+                 width="16"
+                 height="16"
+                 aria-hidden="true"></svg>
+
             Назад към звената
         </a>
 
     </div>
 </div>
+
+<partial name="_DeleteConfirmModal" model="deleteModal" />

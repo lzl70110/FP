@@ -30,3 +30,7 @@ body {
 .crud-result-dialog {
     margin-top: 0.5rem;
 }
+
+.crud-result-body {
+    background-color: #f5f6f7;
+}

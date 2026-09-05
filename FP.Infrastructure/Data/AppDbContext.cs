@@ -13,7 +13,7 @@ namespace FP.Infrastructure.Data;
 
 public class AppDbContext : DbContext
 {
-    // Temporary system user until Identity is introduced.
+    // Временен системен потребител, докато бъде въведен Identity.
     private const string SystemUser = "System";
 
     private static readonly HashSet<string> AuditExcludedProperties =
@@ -44,6 +44,8 @@ public class AppDbContext : DbContext
     public override async Task<int> SaveChangesAsync(
         CancellationToken cancellationToken = default)
     {
+        var now = DateTime.UtcNow;
+
         var trackedEntries = ChangeTracker
             .Entries<SoftDeletableEntity>()
             .Where(e => e.State is
@@ -51,7 +53,46 @@ public class AppDbContext : DbContext
                 EntityState.Modified)
             .ToList();
 
+        // Подготвяме одитната информация преди записването,
+        // за да запазим старите и новите стойности.
         var auditData = PrepareAuditData(trackedEntries);
+
+        // Автоматично попълваме системните полета за одит.
+        foreach (var entry in trackedEntries)
+        {
+            if (entry.State == EntityState.Added)
+            {
+                entry.Entity.CreatedAt = now;
+                entry.Entity.CreatedById = SystemUser;
+
+                entry.Entity.UpdatedAt = null;
+                entry.Entity.UpdatedById = null;
+            }
+            else if (entry.State == EntityState.Modified)
+            {
+                entry.Entity.UpdatedAt = now;
+                entry.Entity.UpdatedById = SystemUser;
+
+                var isDeletedProperty = entry.Property(
+                    nameof(SoftDeletableEntity.IsDeleted));
+
+                if (isDeletedProperty.IsModified)
+                {
+                    if (entry.Entity.IsDeleted)
+                    {
+                        // Записваме момента и потребителя при изтриване.
+                        entry.Entity.DeletedAt = now;
+                        entry.Entity.DeletedById = SystemUser;
+                    }
+                    else
+                    {
+                        // При възстановяване премахваме информацията за изтриването.
+                        entry.Entity.DeletedAt = null;
+                        entry.Entity.DeletedById = null;
+                    }
+                }
+            }
+        }
 
         await using var transaction =
             Database.CurrentTransaction == null
@@ -60,21 +101,22 @@ public class AppDbContext : DbContext
 
         try
         {
-            // Save business entities first so generated IDs become available.
+            // Първо записваме основните данни,
+            // за да получим генерираните Id стойности.
             var result = await base.SaveChangesAsync(cancellationToken);
 
-            // Update entity IDs after database-generated keys are available.
+            // Обновяваме Id стойностите след записването в базата.
             foreach (var data in auditData)
             {
                 data.EntityId = data.Entity.Id;
             }
 
-            // Create audit entries after IDs have been generated.
+            // Създаваме одитните записи.
             foreach (var data in auditData)
             {
                 AuditEntries.Add(new AuditEntry
                 {
-                    Timestamp = DateTime.UtcNow,
+                    Timestamp = now,
                     UserId = SystemUser,
                     EntityType = data.EntityType,
                     EntityId = data.EntityId,
@@ -84,7 +126,7 @@ public class AppDbContext : DbContext
                 });
             }
 
-            // Save audit records in the same transaction.
+            // Записваме одитните записи в същата транзакция.
             if (auditData.Count > 0)
             {
                 await base.SaveChangesAsync(cancellationToken);
@@ -211,7 +253,7 @@ public class AppDbContext : DbContext
     {
         base.OnModelCreating(builder);
 
-        // Load all Fluent API configurations from Infrastructure.
+        // Зареждаме всички Fluent API конфигурации от Infrastructure.
         builder.ApplyConfigurationsFromAssembly(
             typeof(AppDbContext).Assembly);
 
@@ -234,7 +276,7 @@ public class AppDbContext : DbContext
                         Expression.Constant(false)),
                     parameter);
 
-                // Hide soft-deleted records from standard queries.
+                // Скриваме изтритите записи от стандартните заявки.
                 entityType.SetQueryFilter(filter);
             }
         }
