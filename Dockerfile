@@ -1,4 +1,3 @@
- 
 # Build stage
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
@@ -15,6 +14,7 @@ RUN dotnet restore FP.web/FP.web.csproj
 
 # Copy source code
 COPY FP.web/ FP.web/
+COPY FP.Web/ FP.web/
 COPY FP.Application/ FP.Application/
 COPY FP.Domain/ FP.Domain/
 COPY FP.Infrastructure/ FP.Infrastructure/
@@ -37,4 +37,4 @@ ENV ASPNETCORE_HTTP_PORTS=10000
 EXPOSE 10000
 
 ENTRYPOINT ["dotnet", "FP.web.dll"]
- 
+
