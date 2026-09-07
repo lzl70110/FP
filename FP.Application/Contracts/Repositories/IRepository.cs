@@ -1,4 +1,5 @@
-﻿using System.Linq.Expressions;
+﻿ 
+using System.Linq.Expressions;
 using FP.Domain.Common;
 
 namespace FP.Application.Contracts.Repositories;
@@ -8,9 +9,19 @@ public interface IRepository<TEntity>
 {
     Task<TEntity?> GetByIdAsync(int id);
 
+    Task<TEntity?> GetByIdAsync(
+        int id,
+        params Expression<Func<TEntity, object>>[] includes);
+
     Task<List<TEntity>> GetAllAsync();
 
+    Task<List<TEntity>> GetAllAsync(
+        params Expression<Func<TEntity, object>>[] includes);
+
     Task<List<TEntity>> GetDeletedAsync();
+
+    Task<List<TEntity>> GetDeletedAsync(
+        params Expression<Func<TEntity, object>>[] includes);
 
     Task<List<TEntity>> WhereAsync(
         Expression<Func<TEntity, bool>> predicate);
@@ -31,3 +42,4 @@ public interface IRepository<TEntity>
 
     Task<TEntity?> GetDeletedByIdAsync(int id);
 }
+ 

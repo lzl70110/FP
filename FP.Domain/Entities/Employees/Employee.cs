@@ -39,7 +39,7 @@ public class Employee : SoftDeletableEntity
 
     public int PositionId { get; set; }
 
-    public Position Position { get; set; } = null!;
+    public Position? Position { get; set; }
 
     [Display(Name = "Забележка")]
     [StringLength(

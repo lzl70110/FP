@@ -1,0 +1,16 @@
+﻿.employee-position {
+    width: 40ch;
+    max-width: 100%;
+}
+
+.employee-work-number {
+    width: 60px;
+}
+
+.employee-name {
+    width: 19ch;
+}
+
+.employee-notes {
+    width: 20ch;
+}

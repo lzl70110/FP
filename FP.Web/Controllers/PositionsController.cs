@@ -76,9 +76,18 @@ public class PositionsController(
     }
 
     [HttpGet]
-    public IActionResult Create(int departmentId)
+    public async Task<IActionResult> Create(int departmentId)
     {
+        var department = await departmentService.GetByIdAsync(
+            departmentId);
+
+        if (department == null)
+        {
+            return NotFound();
+        }
+
         ViewData["DepartmentId"] = departmentId;
+        ViewData["DepartmentName"] = department.Name;
 
         return View(new NamedActiveEntityViewModel());
     }
@@ -91,7 +100,16 @@ public class PositionsController(
     {
         if (!ModelState.IsValid)
         {
+            var department = await departmentService.GetByIdAsync(
+                departmentId);
+
+            if (department == null)
+            {
+                return NotFound();
+            }
+
             ViewData["DepartmentId"] = departmentId;
+            ViewData["DepartmentName"] = department.Name;
 
             return View(model);
         }
@@ -104,9 +122,18 @@ public class PositionsController(
         {
             ModelState.AddModelError(
                 nameof(model.Name),
-                "В този отдел вече съществува длъжност с това име.");
+                "В това звено вече съществува длъжност с това име.");
+
+            var department = await departmentService.GetByIdAsync(
+                departmentId);
+
+            if (department == null)
+            {
+                return NotFound();
+            }
 
             ViewData["DepartmentId"] = departmentId;
+            ViewData["DepartmentName"] = department.Name;
 
             return View(model);
         }
@@ -167,6 +194,14 @@ public class PositionsController(
             return NotFound();
         }
 
+        var department = await departmentService.GetByIdAsync(
+            departmentId);
+
+        if (department == null)
+        {
+            return NotFound();
+        }
+
         var model = new NamedActiveEntityViewModel
         {
             Name = position.Name,
@@ -176,6 +211,7 @@ public class PositionsController(
 
         ViewData["Id"] = position.Id;
         ViewData["DepartmentId"] = departmentId;
+        ViewData["DepartmentName"] = department.Name;
 
         return View(model);
     }
@@ -189,8 +225,17 @@ public class PositionsController(
     {
         if (!ModelState.IsValid)
         {
+            var department = await departmentService.GetByIdAsync(
+                departmentId);
+
+            if (department == null)
+            {
+                return NotFound();
+            }
+
             ViewData["Id"] = id;
             ViewData["DepartmentId"] = departmentId;
+            ViewData["DepartmentName"] = department.Name;
 
             return View(model);
         }
@@ -212,10 +257,19 @@ public class PositionsController(
         {
             ModelState.AddModelError(
                 nameof(model.Name),
-                "В този отдел вече съществува длъжност с това име.");
+                "В това звено вече съществува длъжност с това име.");
+
+            var department = await departmentService.GetByIdAsync(
+                departmentId);
+
+            if (department == null)
+            {
+                return NotFound();
+            }
 
             ViewData["Id"] = id;
             ViewData["DepartmentId"] = departmentId;
+            ViewData["DepartmentName"] = department.Name;
 
             return View(model);
         }
@@ -393,4 +447,3 @@ public class PositionsController(
             new { departmentId });
     }
 }
-

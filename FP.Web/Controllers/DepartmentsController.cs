@@ -60,20 +60,20 @@ public class DepartmentsController(
             properties:
             [
                 new CrudProperty
-            {
-                Name = nameof(Department.Name),
-                Value = department.Name
-            },
-            new CrudProperty
-            {
-                Name = nameof(Department.Notes),
-                Value = department.Notes
-            },
-            new CrudProperty
-            {
-                Name = nameof(Department.IsActive),
-                Value = department.IsActive
-            }
+                {
+                    Name = nameof(Department.Name),
+                    Value = department.Name
+                },
+                new CrudProperty
+                {
+                    Name = nameof(Department.Notes),
+                    Value = department.Notes
+                },
+                new CrudProperty
+                {
+                    Name = nameof(Department.IsActive),
+                    Value = department.IsActive
+                }
             ]);
 
         if (result != null)
@@ -83,7 +83,8 @@ public class DepartmentsController(
                 {
                     Type = CrudResultType.Success,
                     Title = "Успешно",
-                    Message = $"Отделът „{result.Name}“ беше създаден успешно."
+                    Message =
+                        $"Звеното „{result.Name}“ беше създадено успешно."
                 });
         }
 
@@ -117,20 +118,20 @@ public class DepartmentsController(
             department.Id,
             [
                 new CrudProperty
-            {
-                Name = nameof(Department.Name),
-                Value = department.Name
-            },
-            new CrudProperty
-            {
-                Name = nameof(Department.Notes),
-                Value = department.Notes
-            },
-            new CrudProperty
-            {
-                Name = nameof(Department.IsActive),
-                Value = department.IsActive
-            }
+                {
+                    Name = nameof(Department.Name),
+                    Value = department.Name
+                },
+                new CrudProperty
+                {
+                    Name = nameof(Department.Notes),
+                    Value = department.Notes
+                },
+                new CrudProperty
+                {
+                    Name = nameof(Department.IsActive),
+                    Value = department.IsActive
+                }
             ]);
 
         if (result != null)
@@ -140,7 +141,8 @@ public class DepartmentsController(
                 {
                     Type = CrudResultType.Success,
                     Title = "Успешно",
-                    Message = $"Отделът „{result.Name}“ беше променен успешно."
+                    Message =
+                        $"Звеното „{result.Name}“ беше променено успешно."
                 });
         }
         else
@@ -150,7 +152,8 @@ public class DepartmentsController(
                 {
                     Type = CrudResultType.Warning,
                     Title = "Внимание",
-                    Message = "Отделът не беше намерен и не беше променен."
+                    Message =
+                        "Звеното не беше намерено и не беше променено."
                 });
         }
 
@@ -172,7 +175,8 @@ public class DepartmentsController(
                 {
                     Type = CrudResultType.Success,
                     Title = "Успешно",
-                    Message = $"Отделът „{result.Name}“ беше изтрит успешно."
+                    Message =
+                        $"Звеното „{result.Name}“ беше изтрито успешно."
                 });
         }
         else
@@ -182,7 +186,8 @@ public class DepartmentsController(
                 {
                     Type = CrudResultType.Warning,
                     Title = "Внимание",
-                    Message = "Отделът не беше намерен и не беше изтрит."
+                    Message =
+                        "Звеното не беше намерено и не беше изтрито."
                 });
         }
 
@@ -204,7 +209,8 @@ public class DepartmentsController(
                 {
                     Type = CrudResultType.Success,
                     Title = "Успешно",
-                    Message = $"Отделът „{result.Name}“ беше възстановен успешно."
+                    Message =
+                        $"Звеното „{result.Name}“ беше възстановено успешно."
                 });
         }
         else
@@ -214,12 +220,11 @@ public class DepartmentsController(
                 {
                     Type = CrudResultType.Warning,
                     Title = "Внимание",
-                    Message = "Отделът не беше намерен и не беше възстановен."
+                    Message =
+                        "Звеното не беше намерено и не беше възстановено."
                 });
         }
 
         return RedirectToAction(nameof(Deleted));
     }
-
-
 }

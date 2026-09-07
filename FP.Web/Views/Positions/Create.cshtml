@@ -1,34 +1,90 @@
 ﻿@model FP.Web.Models.Forms.NamedActiveEntityViewModel
 
 @{
-    ViewData["Title"] = "Нова длъжност";
+    var departmentId = (int)ViewData["DepartmentId"]!;
+    var departmentName = ViewData["DepartmentName"]?.ToString();
+
+    ViewData["Title"] = $"Добавяне на длъжност: {departmentName}";
 }
 
-<h1>Нова длъжност</h1>
+<div class="mb-4">
+    <h1>@departmentName</h1>
+    <h4>Добавяне на длъжност</h4>
+</div>
 
-<form asp-action="Create" method="post">
+<div class="row">
+    <div class="col-md-6">
 
-  
-    <input type="hidden"
-           name="departmentId"
-           value="@ViewData["DepartmentId"]" />
+        <form asp-action="Create"
+              asp-route-departmentId="@departmentId"
+              method="post">
 
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div asp-validation-summary="ModelOnly"
+                 class="text-danger mb-3">
+            </div>
 
-    @Html.EditorForModel()
+            <div class="mb-3">
+                <label asp-for="Name"
+                       class="form-label fw-bold fst-italic">
+                </label>
 
-    <button type="submit" class="btn btn-primary">
-        Запиши
-    </button>
+                <input asp-for="Name"
+                       class="form-control" />
 
-    <a asp-action="Index"
-       asp-route-departmentId="@ViewData["DepartmentId"]"
-       class="btn btn-secondary">
-        Назад
-    </a>
-    
+                <span asp-validation-for="Name"
+                      class="text-danger">
+                </span>
+            </div>
 
-</form>
+            <div class="mb-3">
+                <label asp-for="Notes"
+                       class="form-label fw-bold fst-italic">
+                </label>
+
+                <input asp-for="Notes"
+                       class="form-control" />
+
+                <span asp-validation-for="Notes"
+                      class="text-danger">
+                </span>
+            </div>
+
+            <div class="form-check mb-4">
+                <input asp-for="IsActive"
+                       class="form-check-input" />
+
+                <label asp-for="IsActive"
+                       class="form-check-label fw-bold fst-italic">
+                </label>
+            </div>
+
+            <button type="submit"
+                    class="btn btn-primary">
+
+                <svg bootstrap-icon="Check"
+                     width="16"
+                     height="16"
+                     aria-hidden="true"></svg>
+
+                Запази
+            </button>
+
+            <a asp-action="Index"
+               asp-route-departmentId="@departmentId"
+               class="btn btn-secondary">
+
+                <svg bootstrap-icon="X"
+                     width="16"
+                     height="16"
+                     aria-hidden="true"></svg>
+
+                Отказ
+            </a>
+
+        </form>
+
+    </div>
+</div>
 
 @section Scripts {
     @{

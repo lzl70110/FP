@@ -1,0 +1,177 @@
+﻿ 
+@model FP.Domain.Entities.Employees.Employee
+
+@{
+    ViewData["Title"] = $"Редакция на служител: {ViewData["DepartmentName"]}";
+
+    var departmentId = (int)ViewData["DepartmentId"]!;
+    var departmentName = ViewData["DepartmentName"]?.ToString();
+
+    var positions = ViewBag.Positions
+        as List<FP.Domain.Entities.Positions.Position>;
+}
+
+<div class="mb-4">
+    <h1>@departmentName</h1>
+    <h4>Редакция на служител</h4>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+
+        <form asp-action="Edit"
+              asp-route-id="@Model.Id"
+              asp-route-departmentId="@departmentId"
+              method="post">
+
+            <div asp-validation-summary="ModelOnly"
+                 class="text-danger mb-3">
+            </div>
+
+            <!-- Work Number -->
+            <div class="mb-3">
+                <label asp-for="WorkNumber"
+                       class="form-label fw-bold fst-italic">
+                </label>
+
+                <input asp-for="WorkNumber"
+                       class="form-control"
+                       readonly />
+
+                <span asp-validation-for="WorkNumber"
+                      class="text-danger">
+                </span>
+            </div>
+
+            <!-- Position -->
+            <div class="mb-3">
+                <label asp-for="PositionId"
+                       class="form-label fw-bold fst-italic">
+                    Длъжност
+                </label>
+
+                <select asp-for="PositionId"
+                        class="form-select employee-position">
+
+                    <option value="">
+                        -- Изберете длъжност --
+                    </option>
+
+                    @if (positions != null)
+                    {
+                        foreach (var position in positions)
+                        {
+                            <option value="@position.Id">
+                                @position.Name
+                            </option>
+                        }
+                    }
+
+                </select>
+
+                <span asp-validation-for="PositionId"
+                      class="text-danger">
+                </span>
+            </div>
+
+            <!-- First Name -->
+            <div class="mb-3">
+                <label asp-for="FirstName"
+                       class="form-label fw-bold fst-italic">
+                </label>
+
+                <input asp-for="FirstName"
+                       class="form-control employee-name" />
+
+                <span asp-validation-for="FirstName"
+                      class="text-danger">
+                </span>
+            </div>
+
+            <!-- Middle Name -->
+            <div class="mb-3">
+                <label asp-for="MiddleName"
+                       class="form-label fw-bold fst-italic">
+                </label>
+
+                <input asp-for="MiddleName"
+                       class="form-control employee-name" />
+
+                <span asp-validation-for="MiddleName"
+                      class="text-danger">
+                </span>
+            </div>
+
+            <!-- Last Name -->
+            <div class="mb-3">
+                <label asp-for="LastName"
+                       class="form-label fw-bold fst-italic">
+                </label>
+
+                <input asp-for="LastName"
+                       class="form-control employee-name" />
+
+                <span asp-validation-for="LastName"
+                      class="text-danger">
+                </span>
+            </div>
+
+            <!-- Notes -->
+            <div class="mb-3">
+                <label asp-for="Notes"
+                       class="form-label fw-bold fst-italic">
+                </label>
+
+                <input asp-for="Notes"
+                       class="form-control employee-notes" />
+
+                <span asp-validation-for="Notes"
+                      class="text-danger">
+                </span>
+            </div>
+
+            <!-- Active -->
+            <div class="form-check mb-4">
+                <input asp-for="IsActive"
+                       class="form-check-input" />
+
+                <label asp-for="IsActive"
+                       class="form-check-label fw-bold fst-italic">
+                </label>
+            </div>
+
+            <!-- Actions -->
+            <button type="submit"
+                    class="btn btn-primary">
+
+                <svg bootstrap-icon="Check"
+                     width="16"
+                     height="16"
+                     aria-hidden="true"></svg>
+
+                Запази
+            </button>
+
+            <a asp-action="Index"
+               asp-route-departmentId="@departmentId"
+               class="btn btn-secondary">
+
+                <svg bootstrap-icon="X"
+                     width="16"
+                     height="16"
+                     aria-hidden="true"></svg>
+
+                Отказ
+            </a>
+
+        </form>
+
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+ 

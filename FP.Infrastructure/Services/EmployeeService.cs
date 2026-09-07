@@ -16,17 +16,21 @@ public class EmployeeService : IEmployeeService
 
     public async Task<List<Employee>> GetAllAsync()
     {
-        return await repository.GetAllAsync();
+        return await repository.GetAllAsync(
+            employee => employee.Position);
     }
 
     public async Task<List<Employee>> GetDeletedAsync()
     {
-        return await repository.GetDeletedAsync();
+        return await repository.GetDeletedAsync(
+            employee => employee.Position);
     }
 
     public async Task<Employee?> GetByIdAsync(int id)
     {
-        return await repository.GetByIdAsync(id);
+        return await repository.GetByIdAsync(
+            id,
+            employee => employee.Position);
     }
 }
  

@@ -4,11 +4,11 @@
 @inject DateTimeService DateTimeService
 
 @{
-    ViewData["Title"] = "Изтрити отдели";
+    ViewData["Title"] = "Изтрити звена";
 }
 
 <div class="d-flex justify-content-between align-items-center mb-3">
-    <h1>Изтрити отдели</h1>
+    <h1>Изтрити звена</h1>
 
     <a asp-action="Index" class="btn btn-secondary">
         <i class="bi bi-arrow-left"></i>
@@ -19,7 +19,7 @@
 @if (!Model.Any())
 {
     <div class="alert alert-info">
-        Няма изтрити отдели.
+        Няма изтрити звена.
     </div>
 }
 else

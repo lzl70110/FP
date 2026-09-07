@@ -1,4 +1,4 @@
-﻿using FP.Application.Common;
+﻿ using FP.Application.Common;
 using FP.Application.Contracts.Services;
 using FP.Domain.Entities.Employees;
 using FP.Web.Extensions;
@@ -11,55 +11,152 @@ public class EmployeesController : Controller
 {
     private readonly IEmployeeService service;
     private readonly ICrudService<Employee> crudService;
+    private readonly IPositionService positionService;
+    private readonly IDepartmentService departmentService;
 
     public EmployeesController(
         IEmployeeService service,
-        ICrudService<Employee> crudService)
+        ICrudService<Employee> crudService,
+        IPositionService positionService,
+        IDepartmentService departmentService)
     {
         this.service = service;
         this.crudService = crudService;
+        this.positionService = positionService;
+        this.departmentService = departmentService;
     }
 
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index(int departmentId)
     {
-        var employees = await service.GetAllAsync();
+        var department = await departmentService.GetByIdAsync(
+            departmentId);
 
-        return View(employees);
-    }
-
-    public async Task<IActionResult> Details(int id)
-    {
-        var employee = await crudService.ExecuteAsync(
-            CrudCommand.Read,
-            id);
-
-        if (employee == null)
+        if (department == null)
         {
             return NotFound();
         }
 
+        var employees = (await service.GetAllAsync())
+            .Where(employee =>
+                employee.Position != null &&
+                employee.Position.DepartmentId == departmentId)
+            .OrderBy(employee => employee.WorkNumber)
+            .ToList();
+
+        ViewData["DepartmentId"] = departmentId;
+        ViewData["DepartmentName"] = department.Name;
+
+        return View(employees);
+    }
+
+    public async Task<IActionResult> Details(
+        int id,
+        int departmentId)
+    {
+        var employee = await service.GetByIdAsync(id);
+
+        if (employee == null ||
+            employee.Position == null ||
+            employee.Position.DepartmentId != departmentId)
+        {
+            return NotFound();
+        }
+
+        var department = await departmentService.GetByIdAsync(
+            departmentId);
+
+        if (department == null)
+        {
+            return NotFound();
+        }
+
+        ViewData["DepartmentId"] = departmentId;
+        ViewData["DepartmentName"] = department.Name;
+
         return View(employee);
     }
 
-    public async Task<IActionResult> Deleted()
+    public async Task<IActionResult> Deleted(int departmentId)
     {
-        var employees = await service.GetDeletedAsync();
+        var department = await departmentService.GetByIdAsync(
+            departmentId);
+
+        if (department == null)
+        {
+            return NotFound();
+        }
+
+        var employees = (await service.GetDeletedAsync())
+            .Where(employee =>
+                employee.Position != null &&
+                employee.Position.DepartmentId == departmentId)
+            .OrderBy(employee => employee.WorkNumber)
+            .ToList();
+
+        ViewData["DepartmentId"] = departmentId;
+        ViewData["DepartmentName"] = department.Name;
 
         return View(employees);
     }
 
     [HttpGet]
-    public IActionResult Create()
+    public async Task<IActionResult> Create(int departmentId)
     {
-        return View();
+        var department = await departmentService.GetByIdAsync(
+            departmentId);
+
+        if (department == null)
+        {
+            return NotFound();
+        }
+
+        await LoadPositionsAsync(departmentId);
+
+        ViewData["DepartmentId"] = departmentId;
+        ViewData["DepartmentName"] = department.Name;
+
+        return View(new Employee());
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(Employee employee)
+    public async Task<IActionResult> Create(
+        int departmentId,
+        Employee employee)
     {
+        var department = await departmentService.GetByIdAsync(
+            departmentId);
+
+        if (department == null)
+        {
+            return NotFound();
+        }
+
         if (!ModelState.IsValid)
         {
+            await LoadPositionsAsync(departmentId);
+
+            ViewData["DepartmentId"] = departmentId;
+            ViewData["DepartmentName"] = department.Name;
+
+            return View(employee);
+        }
+
+        var position = await positionService.GetByIdAsync(
+            employee.PositionId);
+
+        if (position == null ||
+            position.DepartmentId != departmentId)
+        {
+            ModelState.AddModelError(
+                nameof(employee.PositionId),
+                "Избраната длъжност не принадлежи към това звено.");
+
+            await LoadPositionsAsync(departmentId);
+
+            ViewData["DepartmentId"] = departmentId;
+            ViewData["DepartmentName"] = department.Name;
+
             return View(employee);
         }
 
@@ -116,40 +213,97 @@ public class EmployeesController : Controller
                 });
         }
 
-        return RedirectToAction(nameof(Index));
+        return RedirectToAction(
+            nameof(Index),
+            new { departmentId });
     }
 
     [HttpGet]
-    public async Task<IActionResult> Edit(int id)
+    public async Task<IActionResult> Edit(
+        int id,
+        int departmentId)
     {
         var employee = await service.GetByIdAsync(id);
 
-        if (employee == null)
+        if (employee == null ||
+            employee.Position == null ||
+            employee.Position.DepartmentId != departmentId)
         {
             return NotFound();
         }
+
+        var department = await departmentService.GetByIdAsync(
+            departmentId);
+
+        if (department == null)
+        {
+            return NotFound();
+        }
+
+        await LoadPositionsAsync(departmentId);
+
+        ViewData["DepartmentId"] = departmentId;
+        ViewData["DepartmentName"] = department.Name;
 
         return View(employee);
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(Employee employee)
+    public async Task<IActionResult> Edit(
+        int id,
+        int departmentId,
+        Employee employee)
     {
+        var department = await departmentService.GetByIdAsync(
+            departmentId);
+
+        if (department == null)
+        {
+            return NotFound();
+        }
+
         if (!ModelState.IsValid)
         {
+            await LoadPositionsAsync(departmentId);
+
+            ViewData["DepartmentId"] = departmentId;
+            ViewData["DepartmentName"] = department.Name;
+
+            return View(employee);
+        }
+
+        var existingEmployee = await service.GetByIdAsync(id);
+
+        if (existingEmployee == null ||
+            existingEmployee.Position == null ||
+            existingEmployee.Position.DepartmentId != departmentId)
+        {
+            return NotFound();
+        }
+
+        var position = await positionService.GetByIdAsync(
+            employee.PositionId);
+
+        if (position == null ||
+            position.DepartmentId != departmentId)
+        {
+            ModelState.AddModelError(
+                nameof(employee.PositionId),
+                "Избраната длъжност не принадлежи към това звено.");
+
+            await LoadPositionsAsync(departmentId);
+
+            ViewData["DepartmentId"] = departmentId;
+            ViewData["DepartmentName"] = department.Name;
+
             return View(employee);
         }
 
         var result = await crudService.ExecuteAsync(
             CrudCommand.Update,
-            employee.Id,
+            id,
             [
-                new CrudProperty
-                {
-                    Name = nameof(Employee.WorkNumber),
-                    Value = employee.WorkNumber
-                },
                 new CrudProperty
                 {
                     Name = nameof(Employee.FirstName),
@@ -205,13 +359,37 @@ public class EmployeesController : Controller
                 });
         }
 
-        return RedirectToAction(nameof(Index));
+        return RedirectToAction(
+            nameof(Index),
+            new { departmentId });
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Delete(int id)
+    public async Task<IActionResult> Delete(
+        int id,
+        int departmentId)
     {
+        var employee = await service.GetByIdAsync(id);
+
+        if (employee == null ||
+            employee.Position == null ||
+            employee.Position.DepartmentId != departmentId)
+        {
+            TempData.SetCrudResult(
+                new CrudResultViewModel
+                {
+                    Type = CrudResultType.Warning,
+                    Title = "Внимание",
+                    Message =
+                        "Служителят не беше намерен и не беше изтрит."
+                });
+
+            return RedirectToAction(
+                nameof(Index),
+                new { departmentId });
+        }
+
         var result = await crudService.ExecuteAsync(
             CrudCommand.Delete,
             id);
@@ -227,7 +405,25 @@ public class EmployeesController : Controller
                         $"Служителят „{result.FirstName} {result.LastName}“ беше изтрит успешно."
                 });
         }
-        else
+
+        return RedirectToAction(
+            nameof(Index),
+            new { departmentId });
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Undelete(
+        int id,
+        int departmentId)
+    {
+        var deletedEmployee = (await service.GetDeletedAsync())
+            .FirstOrDefault(employee =>
+                employee.Id == id &&
+                employee.Position != null &&
+                employee.Position.DepartmentId == departmentId);
+
+        if (deletedEmployee == null)
         {
             TempData.SetCrudResult(
                 new CrudResultViewModel
@@ -235,17 +431,14 @@ public class EmployeesController : Controller
                     Type = CrudResultType.Warning,
                     Title = "Внимание",
                     Message =
-                        "Служителят не беше намерен и не беше изтрит."
+                        "Служителят не беше намерен и не беше възстановен."
                 });
+
+            return RedirectToAction(
+                nameof(Deleted),
+                new { departmentId });
         }
 
-        return RedirectToAction(nameof(Index));
-    }
-
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Undelete(int id)
-    {
         var result = await crudService.ExecuteAsync(
             CrudCommand.Undelete,
             id);
@@ -273,6 +466,17 @@ public class EmployeesController : Controller
                 });
         }
 
-        return RedirectToAction(nameof(Deleted));
+        return RedirectToAction(
+            nameof(Deleted),
+            new { departmentId });
+    }
+
+    private async Task LoadPositionsAsync(int departmentId)
+    {
+        var positions = await positionService.GetByDepartmentAsync(
+            departmentId);
+
+        ViewBag.Positions = positions;
     }
 }
+ 

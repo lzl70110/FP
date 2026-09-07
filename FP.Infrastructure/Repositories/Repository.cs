@@ -1,4 +1,5 @@
-﻿using FP.Application.Contracts.Repositories;
+﻿ 
+using FP.Application.Contracts.Repositories;
 using FP.Domain.Common;
 using FP.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -22,16 +23,44 @@ public class Repository<TEntity> : IRepository<TEntity>
             .FirstOrDefaultAsync(x => x.Id == id);
     }
 
+    public async Task<TEntity?> GetByIdAsync(
+        int id,
+        params Expression<Func<TEntity, object>>[] includes)
+    {
+        var query = BuildQuery(includes);
+
+        return await query
+            .FirstOrDefaultAsync(x => x.Id == id);
+    }
+
     public async Task<List<TEntity>> GetAllAsync()
     {
         return await context.Set<TEntity>()
             .ToListAsync();
     }
 
+    public async Task<List<TEntity>> GetAllAsync(
+        params Expression<Func<TEntity, object>>[] includes)
+    {
+        var query = BuildQuery(includes);
+
+        return await query.ToListAsync();
+    }
+
     public async Task<List<TEntity>> GetDeletedAsync()
     {
         return await context.Set<TEntity>()
             .IgnoreQueryFilters()
+            .Where(x => x.IsDeleted)
+            .ToListAsync();
+    }
+
+    public async Task<List<TEntity>> GetDeletedAsync(
+        params Expression<Func<TEntity, object>>[] includes)
+    {
+        var query = BuildQuery(includes, ignoreQueryFilters: true);
+
+        return await query
             .Where(x => x.IsDeleted)
             .ToListAsync();
     }
@@ -48,6 +77,15 @@ public class Repository<TEntity> : IRepository<TEntity>
         Expression<Func<TEntity, bool>> predicate)
     {
         return await context.Set<TEntity>()
+            .FirstOrDefaultAsync(predicate);
+    }
+
+    public async Task<TEntity?> FirstDeletedOrDefaultAsync(
+        Expression<Func<TEntity, bool>> predicate)
+    {
+        return await context.Set<TEntity>()
+            .IgnoreQueryFilters()
+            .Where(x => x.IsDeleted)
             .FirstOrDefaultAsync(predicate);
     }
 
@@ -85,11 +123,33 @@ public class Repository<TEntity> : IRepository<TEntity>
     }
 
     public async Task<TEntity?> FirstDeletedOrDefaultAsync(
-    Expression<Func<TEntity, bool>> predicate)
+        Expression<Func<TEntity, bool>> predicate,
+        params Expression<Func<TEntity, object>>[] includes)
     {
-        return await context.Set<TEntity>()
-            .IgnoreQueryFilters()
+        var query = BuildQuery(includes, ignoreQueryFilters: true);
+
+        return await query
             .Where(x => x.IsDeleted)
             .FirstOrDefaultAsync(predicate);
     }
+
+    private IQueryable<TEntity> BuildQuery(
+        Expression<Func<TEntity, object>>[] includes,
+        bool ignoreQueryFilters = false)
+    {
+        IQueryable<TEntity> query = context.Set<TEntity>();
+
+        if (ignoreQueryFilters)
+        {
+            query = query.IgnoreQueryFilters();
+        }
+
+        foreach (var include in includes)
+        {
+            query = query.Include(include);
+        }
+
+        return query;
+    }
 }
+ 
