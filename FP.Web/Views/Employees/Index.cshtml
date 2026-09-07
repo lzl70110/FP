@@ -1,5 +1,4 @@
-﻿ 
-@model List<FP.Domain.Entities.Employees.Employee>
+﻿@model List<FP.Domain.Entities.Employees.Employee>
 
 @{
     ViewData["Title"] = $"Служители: {ViewData["DepartmentName"]}";
@@ -9,9 +8,9 @@
 
 <div class="d-flex justify-content-between align-items-center mb-3">
     <div>
-        <h1>Служители</h1>
+        <h1>@departmentName</h1>
         <h5 class="text-muted">
-            Звено: @departmentName
+            Служители
         </h5>
     </div>
 
